@@ -1,4 +1,4 @@
-//"use strict";
+"use strict";
 var Koa=require('koa');
 var process=require('process');
 var util=require('util');
@@ -9,6 +9,8 @@ var co=require('co');
 var render=require('koa-ejs');
 
 var staticServe=require('koa-static');
+var mount=require('koa-mount');
+//var mount=require('todd-mount');
 
 /*
 var init=()=>{
@@ -53,9 +55,9 @@ var midTest2=(config)=>{
 
 //这里其实就是一个async函数变量，不要执行呦。如果为了传参数，可以执行个函数，这个函数返回一个async函数变量
 //app.use(midTest1);
-
 //app.use(midTest2({name:'todd', age:12}));
 
+//获取web配置文件
 var config=require('./config/web.json');
 //db
 var db=require('./mid/db.mid.js');
@@ -66,7 +68,6 @@ var log=require('./mid/log.mid.js');
 app.use(log(config.log.log4js));
 
 //session
-
 var session=require('./mid/s.mid.js');
 app.use(session({
 //    noAuthTtl: 10,
@@ -75,54 +76,23 @@ app.use(session({
 var user=require('./mid/u.mid.js');
 app.use(user());
 
-var Router=require('koa-router');
-var router=new Router();
-router.get('/register', async(ctx, next)=>{
-    if(!ctx.query.account || !ctx.query.username || !ctx.query.password){
-        ctx.body='wrong';
-        
-    }else{
-        var rst=await ctx.u.register({
-            account: ctx.query.account,
-            username: ctx.query.username,
-            password: ctx.query.password,
-        }); 
-        ctx.body=util.inspect(ctx.query);
-    }
-});
-router.get('/logout', async(ctx, next)=>{
-    await ctx.u.logout();
-    await ctx.s.destroy();
-    await ctx.s.createGuest();
-    ctx.body='logout';
-});
-router.get('/login', async(ctx, next)=>{
-    if(!ctx.query.account || !ctx.query.password){
-        ctx.body='login wrong';
-    }else{
-        var rst=await ctx.u.login({
-            inAccount: ctx.query.account,
-            inPassword: ctx.query.password,
-        });
-        if(1==rst.errCode){
-            await ctx.s.destroy();
-            await ctx.s.createUser({
-                userId: rst.userId,
-            });
-        }
-        ctx.body=rst;
-    }
-});
-router.get('/ejs-test', async(ctx, next)=>{
-    await ctx.render('test', {
-        title: 'test',
-    });
-});
+var testRouter=require('./router/test.router.js');
+app.use(testRouter.routes());
 
-app.use(router.routes());
+/*
+//不知道为啥下面两行会出错
+var convert=require('koa-convert');
+app.use(convert(mount('/mount', testRouter.routes())));
+*/
 
-var wsRouter=require('./router/ws.router.js');
-app.use(wsRouter.routes());
+/*
+var test2Router=require('./router/test2.router.js');
+app.use(mount('/test2', test2Router));
+*/
+
+
+var test3Router=require('./router/test3.router.js');
+app.use(test3Router.routes());
 
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
@@ -149,7 +119,7 @@ app.use(async (ctx, next)=>{
             ctx.body=JSON.stringify(await secret.verify(rst.secret));
             break;
         default:
-            ctx.body='default';
+            ctx.body='The address you are looking for is missing...';
             break;
     }
 })
