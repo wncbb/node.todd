@@ -1,0 +1,5 @@
+node_modules
+config/web.json
+staticFile/static/audio/
+staticFile/static/vedio/
+**/.DS_Store
