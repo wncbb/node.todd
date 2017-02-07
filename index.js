@@ -9,8 +9,7 @@ var co=require('co');
 var render=require('koa-ejs');
 
 var staticServe=require('koa-static');
-var mount=require('koa-mount');
-//var mount=require('todd-mount');
+var mount=require('koa-mounting');
 
 /*
 var init=()=>{
@@ -77,20 +76,16 @@ app.use(session({
 
 var user=require('./mid/u.mid.js');
 app.use(user());
-
+/*
 var testRouter=require('./router/test.router.js');
 app.use(testRouter.routes());
-
-/*
-//不知道为啥下面两行会出错
-var convert=require('koa-convert');
-app.use(convert(mount('/mount', testRouter.routes())));
 */
 
-/*
-var test2Router=require('./router/test2.router.js');
-app.use(mount('/test2', test2Router));
-*/
+var testRouter=require('./router/test.router.js');
+app.use(mount('/mount', testRouter.routes()));
+
+var koaRouter=require('./router/koa.router.js');
+app.use(mount('/koa', koaRouter));
 
 
 var test3Router=require('./router/test3.router.js');
