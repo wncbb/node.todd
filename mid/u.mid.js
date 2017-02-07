@@ -32,7 +32,7 @@ class User{
         return hash.digest('hex');
     }
 
-    async _saveUserCore2Core({
+    async _saveUserVitalInfo2Core({
         account='',
         secret='', 
         password='',
@@ -103,6 +103,8 @@ class User{
 
     }
 
+    //async _checkAccount
+
     async register({
         account='',
         password='',
@@ -114,13 +116,13 @@ class User{
  
         var uInfo={};
         uInfo.account=account;
-        uInfo.secret=rndm(8);         
+        uInfo.secret=rndm(User.secretLength);         
         uInfo.password=this._encPassword({
             password: password,
             secret: uInfo.secret,
         });
 
-        var saveCoreRst=await this._saveUserCore2Core(uInfo);
+        var saveCoreRst=await this._saveUserVitalInfo2Core(uInfo);
         if(saveCoreRst.errCode<0){
             ret=saveCoreRst;
             return ret;
@@ -148,7 +150,10 @@ class User{
             ret=fastRst;
             return ret;
         }
-        await fastRst.con.hmset(User.fastDb.userInfo+uInfo.userId, uInfo);
+        await fastRst.con.hmset(User.fastDb.userInfo+uInfo.userId, {
+            account: uInfo.account,
+            secret: uInfo.secret, 
+        });
         ret.errCode=1;
         return ret;
     }
@@ -167,6 +172,9 @@ User.fastDb={
     userInfo: 'u:info:', 
 };
 
+User.config={
+    secretLength: 8,
+};
 
 module.exports=(inArg)=>{
     return async(ctx, next)=>{

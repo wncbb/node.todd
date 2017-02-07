@@ -24,6 +24,8 @@ var app=new Koa();
 render(app, {
     root: path.join(__dirname, 'view'),
     layout: 'layout',
+    //不要layout时需要如下设置
+    //layout: '',
     viewExt: 'html',
     //cache: false,
     debug: true,
@@ -94,6 +96,9 @@ app.use(mount('/test2', test2Router));
 var test3Router=require('./router/test3.router.js');
 app.use(test3Router.routes());
 
+var bsRouter=require('./router/bs.router.js');
+app.use(bsRouter.routes());
+
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
         case '/cnm':
@@ -118,9 +123,11 @@ app.use(async (ctx, next)=>{
             ctx.body=JSON.stringify(rst);
             ctx.body=JSON.stringify(await secret.verify(rst.secret));
             break;
+/*
         default:
             ctx.body='The address you are looking for is missing...';
             break;
+*/
     }
 })
 
