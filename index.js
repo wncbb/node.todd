@@ -87,12 +87,14 @@ app.use(mount('/mount', testRouter.routes()));
 var koaRouter=require('./router/koa.router.js');
 app.use(mount('/koa', koaRouter));
 
+var baseRouter=require('./router/base.router.js');
+app.use(mount('/base', baseRouter));
 
 var test3Router=require('./router/test3.router.js');
 app.use(test3Router.routes());
 
 var bsRouter=require('./router/bs.router.js');
-app.use(bsRouter.routes());
+app.use(mount('/bs', bsRouter));
 
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
@@ -126,10 +128,20 @@ app.use(async (ctx, next)=>{
     }
 })
 
+var baseTool=require('./tool/base.tool.js');
 
-const port=7777;
-app.listen(port, ()=>{
-    console.log(`Server is running on ${port}`);
-});
+var start=(config)=>{
+    let checkPortPromise=baseTool.getCheckPortPromise(config.net.port);    
+    checkPortPromise.then((success)=>{
+        app.listen(config.net.port, ()=>{
+            console.log(`Server is running on ${config.net.port}`);
+        });
+    }).catch(()=>{
+        console.log(`[ERROR] Port ${config.net.port} is occupied, please change another port or close the process using this port.`); 
+    });
+    
+}
+
+start(config);
 
 
