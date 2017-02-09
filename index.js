@@ -96,6 +96,9 @@ app.use(test3Router.routes());
 var bsRouter=require('./router/bs.router.js');
 app.use(mount('/bs', bsRouter));
 
+var codeRouter=require('./router/code.router.js');
+app.use(mount('/code', codeRouter));
+
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
         case '/cnm':

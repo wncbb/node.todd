@@ -1,0 +1,43 @@
+<%- include('../public/header.html') %>
+
+<!--
+<script src="/static/js/code-pretty/run_prettify.js?autoload=true&skin=sunburst"></script>
+-->
+
+<!--<script src="/static/google-code-prettify/run_prettify.js?autoload=true&skin=solarized-dark"></script>-->
+<script src="/static/google-code-prettify/run_prettify.js?autoload=true&skin=tomorrow-night-eighties"></script>
+
+<!--
+<link rel="stylesheet" href="/static/css/prettify.css">
+-->
+
+<div class="container">
+  <pre class="prettyprint linenums:1"  id="code">
+var superAgent=require('superagent');
+TODD 1234
+todd 1234
+var cheerio=require('cheerio');
+var tmp=123;
+function test_get(url, queryData){
+    superAgent.get(url)
+        .end(function(err, res){
+            var $=cheerio.load(res.text);
+            console.log($('#title').text());
+        });
+}
+
+/*
+test_get('http://127.0.0.1:4444/bootstrap/login', {
+    name: 'todd',
+    age: 12,
+});
+*/
+
+test_post('http://127.0.0.1:4444/bootstrap/login', {
+    name: 'todd',
+    age: 12,
+});
+  </pre>
+</div>
+
+

@@ -28,6 +28,17 @@ router.get('/dropdown', async(ctx, next)=>{
         title: 'dropdown',
     });
 });
+router.get('/alert', async(ctx, next)=>{
+    await ctx.render('bs/alert', {
+        title: 'alert',
+    });
+});
+router.get('/badge', async(ctx, next)=>{
+    await ctx.render('bs/badge', {
+        title: 'badge',
+    });
+});
+
 var app=new Koa();
 app.use(async(ctx, next)=>{
     console.log('This is bs');
