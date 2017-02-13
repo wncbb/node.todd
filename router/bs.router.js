@@ -38,6 +38,11 @@ router.get('/badge', async(ctx, next)=>{
         title: 'badge',
     });
 });
+router.get('/form', async(ctx, next)=>{
+    await ctx.render('bs/form', {
+        title: 'form',
+    });
+});
 
 var app=new Koa();
 app.use(async(ctx, next)=>{

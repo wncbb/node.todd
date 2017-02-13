@@ -5,8 +5,8 @@ class Session{
             noAuthTtl  =1*24*60*60,
             authTtl    =100*24*60*60,
             userMaxAge =100*24*60*60,
-            guestTtl   =7*24*60*60,
-            guestMaxAge=7*24*60*60,
+            guestTtl   =1*24*60*60,
+            guestMaxAge=1*24*60*60,
             httpOnly   =true,
             secure     =false,
             path       ='/',
@@ -45,7 +45,7 @@ class Session{
         ret.errCode=-1;
         var status='init';
         var reqS=this.ctx.cookies.get(this.config.webKey);
-        if(reqS){
+        if(!reqS){
             status='reqNoS';
         }
 
@@ -240,6 +240,7 @@ class Session{
             ret=fastRst;
             return ret;
         }
+        console.log('del:'+Session.fastKey['webS']+this.webS);
         await fastRst.con.del(Session.fastKey['webS']+this.webS);
         ret.errCode=1;
         return ret;

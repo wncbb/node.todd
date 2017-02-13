@@ -11,6 +11,8 @@ var render=require('koa-ejs');
 var staticServe=require('koa-static');
 var mount=require('koa-mounting');
 
+var moment=require('moment-timezone');
+
 /*
 var init=()=>{
     global.wd=process.cwd();
@@ -99,6 +101,9 @@ app.use(mount('/bs', bsRouter));
 var codeRouter=require('./router/code.router.js');
 app.use(mount('/code', codeRouter));
 
+var userRouter=require('./router/user.router.js');
+app.use(mount('/u', userRouter));
+
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
         case '/cnm':
@@ -114,7 +119,12 @@ app.use(async (ctx, next)=>{
             ctx.body=ctx.pa+' '+util.inspect(ctx.s.get(['namea']));
             break;
         case '/info':
-            ctx.body=JSON.stringify(ctx.s.webInfo);
+            ctx.body={
+                webS: ctx.s.webS, 
+                webInfo: ctx.s.webInfo,
+                //date: moment.tz(ctx.s.webInfo.createTimestamp, 'Asia/Shanghai').format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+                date: moment.tz(1000*ctx.s.webInfo.createTimestamp, config.time.zone).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+            };
             break;
         case '/secret':
             var Secret=require('./service/secret.srv.js');
