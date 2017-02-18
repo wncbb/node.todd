@@ -19,7 +19,8 @@ class User{
         userId=0,
     }={}){
         this.ctx=ctx;
-        this.u=userId;
+        this.userId=userId;
+        this.userInfo={};
     }
 
     _encPassword({
@@ -101,13 +102,19 @@ class User{
             password: inPassword,
             secret: userCoreInfo.secret,
         });
-        if(encPassword==userCoreInfo.password){
-            ret.errCode=1;
-            ret.userId=userCoreInfo.id;
-        }else{
+        if(encPassword!=userCoreInfo.password){
             ret.errCode=-1;
             ret.errMsg='账号或密码错误2';
         }
+        ret.errCode=1;
+        ret.userId=userCoreInfo.id;
+        //like load
+        this.userId=ret.userId;
+        this.userInfo={
+            password: inPassword,
+            secret: userCoreInfo.secret,
+        };
+
         return ret;
     }
 
@@ -131,6 +138,7 @@ class User{
     }={}){
         var ret={};
         ret.errCode=-1;
+        console.log('account:'+account);
         if(!/[0-9a-zA-Z\.\@\_\-]+/.test(account)){
             ret.errCode=-1;
             ret.errMsg='账号格式错误';
@@ -223,6 +231,7 @@ class User{
         }
 
         ret.errCode=1;
+        ret.userId=uInfo.userId;
         return ret;
     }
 
@@ -256,6 +265,32 @@ class User{
         return ret;
     }
 
+    async load({
+        userId=-1,
+    }={}){
+        var ret={};
+        ret.errCode=-1;
+        if(-1==userId){
+            ret.errCode=-1;
+            ret.errMsg='load user info error because the userId is -1';
+            return ret;
+        }
+        var fastRst=await this.ctx.db.init({
+            type0: 'fast',
+            type1: 'write0',
+        });
+        if(fastRst.errCode<0){
+            ret=fastRst;
+            return ret;
+        }
+        this.userInfo=await fastRst.con.hgetall(User.fastDb.userInfo+userId);
+        if(this.userInfo){
+            this.userId=userId;
+        }
+        ret.errCode=1;
+        return ret;
+    }
+
     echoMe(){
         console.log('This is u.mid.js');
     }
@@ -277,6 +312,10 @@ User.config={
 module.exports=(inArg)=>{
     return async(ctx, next)=>{
         ctx.u=new User(ctx, inArg);
+        await ctx.u.load({
+            userId: ctx.s.webInfo.userId||-1,
+        });
+        console.log(ctx.u.uInfo);
         await next();
     }
 }

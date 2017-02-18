@@ -189,7 +189,7 @@ class Session{
         ret.errCode=-1;
 
         if(0==userId){
-            ret=await this.makeGuest();
+            ret=await this.createGuest();
             return ret;
         }
 

@@ -1,0 +1,76 @@
+<style>
+<!--
+    .td-mid-box{
+        max-width: 41.14285rem;
+        margin: 0 auto;
+    }
+-->
+</style>
+
+<%- include('../public/header.html') %>
+<div class="container">
+    <form action="" class="container">
+        <div class="row">
+            <p class="text-center col-md-12 col-sm-12 col-lg-12">Register</p>
+        </div>
+        <div class="form-group row">
+            <label for="account" class="col-xs-12 col-sm-4 col-form-label">Account</label>
+            <input id="account" class="form-control col-xs-12 col-sm-8" type="text" placeholder="">
+            <small id="account-help" class="form-text text-muted col-xs-12 offset-md-4">
+                Please input the account
+            </small>
+        </div>
+        <div class="form-group row">
+            <label for="password" class="col-xs-12 col-sm-4 col-form-label">Password</label>
+            <input id="password" class="col-xs-12 form-control col-sm-8" type="password" placeholder="">
+            <small id="password-help" class="form-text text-muted col-xs-12 offset-md-4">
+                Please input the password
+            </small>
+        </div>
+        <div class="form-group row">
+            <button class="btn btn-primary col-xs-12 col-xs-12 col-sm-4 offset-sm-4 col-md-4 offset-md-4" id="register-submit">Submit</button>
+        </div>
+    
+    </form>
+</div>
+<script>
+$(document).ready(function(){
+
+$('#register-submit').click(function(e){
+    e.preventDefault();
+    $.ajax({
+        url: '/user/register',
+        type: 'POST',
+        data: {
+            account: $('#account').val(),
+            password: $('#password').val(),
+        },
+        success: function(rsp){
+            console.log('Success:');
+            console.log(rsp);
+            if(rsp.errCode>0){
+                window.location.href='/view/user';
+            }
+        },
+        error: function(err){
+            console.log('Error:');
+            console.log(err);
+        },
+    });
+});
+
+
+
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+

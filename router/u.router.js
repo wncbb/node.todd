@@ -1,39 +1,32 @@
 var Koa=require('koa');
 var Router=require('koa-router');
 var router=new Router();
-router.post('/register', async(ctx, next)=>{
-    console.log(`ctx.request.body ${ctx.request.body}`);
-    //ctx.body=ctx.request.fields;    
+router.get('/register', async(ctx, next)=>{
     var registerRst=await ctx.u.register({
-        account: ctx.request.fields.account,
-        password: ctx.request.fields.password,
+        account: ctx.query['account']||'',
+        password: ctx.query['password']||'',
+        username: ctx.query['username']||'',
     });
     if(registerRst.errCode<0){
         ctx.body=registerRst;
-        return;
-    }
-    await ctx.s.destroy();
-    var sessionRst=await ctx.s.createUser({
-        userId: registerRst.userId,
-    });
-    if(sessionRst.errCode<0){
-        ctx.body=sessionRst;
     }else{
-        ctx.body=sessionRst;
-        //ctx.response.redirect('/info');
+        ctx.body={
+            register: 'success',
+            data: registerRst,
+        };
     }
+
+
     
 });
 
-router.post('/login', async(ctx, next)=>{
+router.get('/login', async(ctx, next)=>{
     var loginRst=await ctx.u.login({
-        account: ctx.request.fields.account,
-        password: ctx.request.fields.password,
+        account: ctx.query['account']||'',
+        password: ctx.query['password']||'',
     });
-    console.log(loginRst);
     if(loginRst.errCode<0){
         ctx.body=loginRst;
-        return;
     }
     await ctx.s.destroy();
     var sessionRst=await ctx.s.createUser({
@@ -43,7 +36,6 @@ router.post('/login', async(ctx, next)=>{
         ctx.body=sessionRst;
     }else{
         ctx.body=sessionRst;
-        //ctx.response.redirect('/info');
     }
 
 });
@@ -54,11 +46,7 @@ router.get('/logout', async(ctx, next)=>{
     ctx.body='logout';
 });
 
-router.get('/user', async(ctx, next)=>{
-    await ctx.render('view/user', {
-        webS: ctx.s.webS,
-    });
-});
+
 
 var app=new Koa();
 // app.use(async(ctx, next)=>{

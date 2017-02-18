@@ -8,6 +8,8 @@ var path=require('path');
 var co=require('co');
 var render=require('koa-ejs');
 
+var body=require('koa-better-body');
+
 var staticServe=require('koa-static');
 var mount=require('koa-mounting');
 
@@ -19,6 +21,9 @@ var init=()=>{
 };
 init();
 */
+
+//获取web配置文件
+var config=require('./config/web.json');
 
 var app=new Koa();
 
@@ -34,12 +39,13 @@ render(app, {
 app.context.render=co.wrap(app.context.render);
 
 app.use(staticServe(path.join(__dirname, 'staticFile')));
-/*
+
 var midTest1=async(ctx, next)=>{
-    ctx.cookies.set('name', 'todd');
+    ctx.moment=moment.tz.setDefault(config.time.zone);
     await next();
 }
-
+app.use(midTest1);
+/*
 var midTest2=(config)=>{
     return async(ctx, next)=>{
         ctx.res.setHeader('name', 'todd');
@@ -60,8 +66,8 @@ var midTest2=(config)=>{
 //app.use(midTest1);
 //app.use(midTest2({name:'todd', age:12}));
 
-//获取web配置文件
-var config=require('./config/web.json');
+app.use(body());
+
 //db
 var db=require('./mid/db.mid.js');
 app.use(db(config.db));
@@ -78,10 +84,14 @@ app.use(session({
 
 var user=require('./mid/u.mid.js');
 app.use(user());
+
+
 /*
 var testRouter=require('./router/test.router.js');
 app.use(testRouter.routes());
 */
+
+
 
 var testRouter=require('./router/test.router.js');
 app.use(mount('/mount', testRouter.routes()));
@@ -102,7 +112,10 @@ var codeRouter=require('./router/code.router.js');
 app.use(mount('/code', codeRouter));
 
 var userRouter=require('./router/user.router.js');
-app.use(mount('/u', userRouter));
+app.use(mount('/user', userRouter));
+
+var userRouter=require('./router/view.router.js');
+app.use(mount('/view', userRouter));
 
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
