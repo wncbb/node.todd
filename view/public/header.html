@@ -7,10 +7,22 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/view/index">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <%if(userId>0){%>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/logout">Logout</a>
+      </li>
+      <%}else{%>
+      <li class="nav-item">
+        <a class="nav-link" href="/view/register">Register</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
+        <a class="nav-link" href="/view/login">Login</a>
+      </li>
+      <%}%>
+      <li class="nav-item">
+        <a class="nav-link" href="/view/user">User</a>
       </li>
       <li class="nav-item">
         <a class="nav-link disabled" href="#">Disabled</a>

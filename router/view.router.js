@@ -5,12 +5,14 @@ var router=new Router();
 router.get('/register', async(ctx, next)=>{
     await ctx.render('view/register', {
         title: 'view/register',
+        userId: ctx.u.userId,
     });
 });
 
 router.get('/login', async(ctx, next)=>{
     await ctx.render('view/login', {
         title: 'view/login',
+        userId: ctx.u.userId,
     });
 });
 
@@ -31,6 +33,15 @@ router.get('/user', async(ctx, next)=>{
             account: ctx.u.userInfo.account,
             secret: ctx.u.userInfo.secret,
         },
+        userId: ctx.u.userId,
+
+    });
+});
+
+router.get('/index', async(ctx, next)=>{
+    await ctx.render('view/index', {
+        title: 'view/index',
+        userId: ctx.u.userId,
     });
 });
 

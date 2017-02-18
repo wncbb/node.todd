@@ -2,6 +2,13 @@ var Koa=require('koa');
 var Router=require('koa-router');
 var router=new Router();
 router.post('/register', async(ctx, next)=>{
+    if(ctx.u.isLogin()){
+        ctx.body={
+            errCode: -1,
+            errMsg: '未登录状态才可以注册',
+        };
+        return;
+    }
     console.log(`ctx.request.body ${ctx.request.body}`);
     //ctx.body=ctx.request.fields;    
     var registerRst=await ctx.u.register({
@@ -26,6 +33,13 @@ router.post('/register', async(ctx, next)=>{
 });
 
 router.post('/login', async(ctx, next)=>{
+    if(ctx.u.isLogin()){
+        ctx.body={
+            errCode: -1,
+            errMsg: '未登录状态才可以登录',
+        };
+        return;
+    }
     var loginRst=await ctx.u.login({
         account: ctx.request.fields.account,
         password: ctx.request.fields.password,
@@ -49,9 +63,16 @@ router.post('/login', async(ctx, next)=>{
 });
 
 router.get('/logout', async(ctx, next)=>{
+    if(!ctx.u.isLogin()){
+        this.body={
+            errCode: -1,
+            errMsg: '登录之后才可以退出登录',
+        };
+        return;
+    }
     await ctx.s.destroy();
     await ctx.s.createGuest();
-    ctx.body='logout';
+    ctx.response.redirect('/view/index');
 });
 
 router.get('/user', async(ctx, next)=>{

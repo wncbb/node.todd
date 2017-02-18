@@ -16,7 +16,7 @@ CREATE TABLE `user_core` (
 
 class User{
     constructor(ctx, {
-        userId=0,
+        userId=-1,
     }={}){
         this.ctx=ctx;
         this.userId=userId;
@@ -293,6 +293,16 @@ class User{
 
     echoMe(){
         console.log('This is u.mid.js');
+    }
+
+    isLogin(){
+        var ret=false;
+        if(this.userId>0){
+            ret=true;
+        }else{
+            ret=false;
+        }
+        return ret;
     }
 
 }
