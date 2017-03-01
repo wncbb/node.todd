@@ -7,13 +7,15 @@ var path=require('path');
 
 var co=require('co');
 var render=require('koa-ejs');
-
+//这里用的是koa-better-body来解析POST请求数据,ctx.request.field是post数据
 var body=require('koa-better-body');
 
 var staticServe=require('koa-static');
+//实验了许多mount中间件，但是只有koa-mounting可以完美兼容koa2
 var mount=require('koa-mounting');
-
 var moment=require('moment-timezone');
+
+var convert=require('koa-convert');
 
 /*
 var init=()=>{
@@ -30,15 +32,21 @@ var app=new Koa();
 render(app, {
     root: path.join(__dirname, 'view'),
     layout: 'layout',
-    //不要layout时需要如下设置
-    //layout: '',
+    /*
+     *不要layout时需要如下设置
+     *layout: '',
+     */
     viewExt: 'html',
     //cache: false,
     debug: true,
 });
 app.context.render=co.wrap(app.context.render);
-
-app.use(staticServe(path.join(__dirname, 'staticFile')));
+/*
+ *这个是对静态文件直接在这个中间件返回
+ *实际中应该用nginx直接返回静态文件
+ */
+//这个地方不用convert转成es6有报警
+app.use(convert(staticServe(path.join(__dirname, 'staticFile'))));
 
 var midTest1=async(ctx, next)=>{
     ctx.moment=moment.tz.setDefault(config.time.zone);
@@ -65,10 +73,13 @@ var midTest2=(config)=>{
 //这里其实就是一个async函数变量，不要执行呦。如果为了传参数，可以执行个函数，这个函数返回一个async函数变量
 //app.use(midTest1);
 //app.use(midTest2({name:'todd', age:12}));
-
-app.use(body());
+//这个地方不用convert转成es6有报警
+app.use(convert(body()));
 
 //db
+/*
+ *这个是数据库，目前支持redis,mysql
+ */
 var db=require('./mid/db.mid.js');
 app.use(db(config.db));
 
@@ -117,6 +128,7 @@ app.use(mount('/user', userRouter));
 var viewRouter=require('./router/view.router.js');
 app.use(mount('/view', viewRouter));
 
+//这个地方直接挂koa2应用
 var wsRouter=require('./router/ws.router.js');
 app.use(mount('/ws', wsRouter));
 

@@ -2,12 +2,19 @@ var crypto=require('crypto');
 var util=require('util');
 class Session{
     constructor(ctx, {
+            //session在noAuthTtl之后自动更新，但不需要登录验证
             noAuthTtl  =1*24*60*60,
+            //session在authTtl之后过期作废，需要重新登录(服务器这边判断)
             authTtl    =100*24*60*60,
+            //在cookie中设置的cookie过期时间
             userMaxAge =100*24*60*60,
+            //如果未登录用户，session服务器这边guestTtl之后过期
             guestTtl   =1*24*60*60,
+            //如果未登录用户，cookie的过期时间
             guestMaxAge=1*24*60*60,
+            //该属性使得js代码无法读取cookie
             httpOnly   =true,
+            //只能在HTTPS连接中被浏览器传递到服务器端进行会话验证(HTTP协议不会传递该参数)
             secure     =false,
             path       ='/',
             webKey     ='webS',
