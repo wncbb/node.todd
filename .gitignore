@@ -3,4 +3,6 @@ config/web.json
 staticFile/static/audio/
 staticFile/static/vedio/
 logs/
+nginx/
 **/.DS_Store
+html/

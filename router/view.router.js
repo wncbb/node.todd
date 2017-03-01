@@ -3,14 +3,24 @@ var Router=require('koa-router');
 var router=new Router();
 
 router.get('/register', async(ctx, next)=>{
+    if(ctx.u.userId>0){
+        ctx.redirect('/view/user');
+        return;
+    }
     await ctx.render('view/register', {
+        path: 'view/register',
         title: 'view/register',
         userId: ctx.u.userId,
     });
 });
 
 router.get('/login', async(ctx, next)=>{
+    if(ctx.u.userId>0){
+        ctx.redirect('/view/user');
+        return;
+    }
     await ctx.render('view/login', {
+        path: 'view/login',
         title: 'view/login',
         userId: ctx.u.userId,
     });
@@ -20,6 +30,7 @@ router.get('/user', async(ctx, next)=>{
     var tmp=ctx.moment(ctx.s.webInfo.createTimestamp*1000).format();
     console.log(tmp);
     await ctx.render('view/user', {
+        path: 'view/user',
         title: 'view/user',
         webS: ctx.s.webS,
         //webInfo: JSON.stringify(ctx.s.webInfo),
@@ -40,6 +51,7 @@ router.get('/user', async(ctx, next)=>{
 
 router.get('/index', async(ctx, next)=>{
     await ctx.render('view/index', {
+        path: 'view/index',
         title: 'view/index',
         userId: ctx.u.userId,
     });

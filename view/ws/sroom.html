@@ -1,0 +1,110 @@
+<style>
+  #talk-area p{
+    border-bottom: 1px solid green;
+  }
+  .container{
+    margin-top: 4rem;
+  }
+</style>
+
+<div class="container">
+
+  <div class="form">
+
+    <div class="form-group row">
+      <div class="col-md-4 col-sm-4 col-xs-4">
+        <select name="action" id="action" class="form-control">
+          <option value="cJoinRoom">join</option>
+          <option value="cLeaveRoom">leave</option>
+        </select>
+      </div>
+      <div class="col-md-4 col-sm-4 col-xs-4">
+        <input type="text" id="name" class="form-control">
+      </div>
+      <div class="col-md-4 col-sm-4 col-xs-4">
+        <input type="text" id="roomId" class="form-control">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <button id="submit" class="btn col-md-4 col-sm-4 col-xs-4 offset-md-4 offset-sm-4 offset-xs-4">submit</button>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-xs-8 col-sm-8 col-md-8">
+        <input type="text" id="talk" class="form-control">
+
+      </div>
+      <div class="col-xs-4 col-sm-4 col-md-4">
+        <button class="btn" id="talk-btn">submit</button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-xs-4 col-sm-4 col-md-4">
+        <button class="btn" id="room-list">room list</button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-xs-12 col-sm-12 col-md-12">
+          <div id="talk-area" class="form-control"></div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+</div>
+
+
+<script>
+  //var ws=io('ws://ws.wncbb.io:<%=port%>');
+  var ws=io('wss://ws.wncbb.io:5001', {secure:true});
+  //var ws=io('ws://192.168.12.119:<%=port%>');
+  //ws.Manager('ws://192.168.12.119:<%=port%>', {path: '/todd'});
+
+  ws.emit('login', {session: $.cookie('s')});
+
+  ws.on('sJoinRoom', function(data){
+    $('#talk-area').append('<textarea class="form-control">'+data.name+' '+data.msg+'</textarea>');
+  });
+  ws.on('sTalk', function(data){
+    $('#talk-area').append('<textarea class="form-control">'+data.name+': '+data.msg+'</textarea>');
+
+  });
+
+  ws.on('sMyRoomList', function(data){
+    $('#talk-area').append('<textarea class="form-control">'+JSON.stringify(data.list)+'</textarea>');
+
+  });
+
+  $(document).ready(function(){
+    $('#submit').click(function(){
+      console.log('click submit '+$('#action').val());
+      window.name=$('#name').val();
+      window.roomId=$('#roomId').val();
+      ws.emit($('#action').val(), {'name': $('#name').val(), 'roomId': $('#roomId').val()}, function(data){
+        console.log(JSON.stringify(data));
+      });
+    });
+    $('#talk-btn').click(function(){
+      ws.emit('cTalk', {'msg': $('#talk').val(), 'name': window.name, 'roomId': window.roomId});
+    });
+    $('#room-list').click(function(){
+      ws.emit('cMyRoomList', {});
+    });
+  });
+</script>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-4 offset-xs-4">
+      This is middle.
+    </div>
+  </div>
+</div>

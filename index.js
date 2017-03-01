@@ -114,8 +114,11 @@ app.use(mount('/code', codeRouter));
 var userRouter=require('./router/user.router.js');
 app.use(mount('/user', userRouter));
 
-var userRouter=require('./router/view.router.js');
-app.use(mount('/view', userRouter));
+var viewRouter=require('./router/view.router.js');
+app.use(mount('/view', viewRouter));
+
+var wsRouter=require('./router/ws.router.js');
+app.use(mount('/ws', wsRouter));
 
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
@@ -148,9 +151,11 @@ app.use(async (ctx, next)=>{
             break;
 /*
         default:
-            ctx.body='The address you are looking for is missing...';
+            //ctx.body='The address you are looking for is missing...';
+            ctx.response.redirect('/view/index');
             break;
 */
+
     }
 })
 

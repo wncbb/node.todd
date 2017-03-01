@@ -16,7 +16,7 @@
     "url": "https://github.com/wncbb/node.todd/issues"
   },
   "homepage": "https://github.com/wncbb/node.todd#readme",
-  "devDependencies": {
+  "dependencies": {
     "i": "^0.3.5",
     "ioredis": "^2.5.0",
     "koa": "^2.0.0-alpha.8",
@@ -29,6 +29,8 @@
     "log4js": "^1.1.0",
     "moment-timezone": "^0.5.11",
     "mysql2": "^1.1.2",
-    "rndm": "^1.2.0"
+    "rndm": "^1.2.0",
+    "socket.io": "^1.7.3",
+    "socket.io-redis": "^4.0.0"
   }
 }
