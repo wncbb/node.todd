@@ -131,9 +131,11 @@ app.use(mount('/view', viewRouter));
 //这个地方直接挂koa2应用
 var wsRouter=require('./router/ws.router.js');
 app.use(mount('/ws', wsRouter));
-
+/*
+//这里有js注入风险
 var markedRouter=require('./router/marked.router.js');
 app.use(mount('/marked', markedRouter));
+*/
 
 var codeMirrorRouter=require('./router/codeMirror.router.js');
 app.use(mount('/code-mirror', codeMirrorRouter));
