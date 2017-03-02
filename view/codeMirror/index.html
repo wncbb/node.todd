@@ -1,0 +1,64 @@
+<%- include('../public/header.html') %>
+
+<link rel="stylesheet" href="/static/code-mirror/lib/codemirror.css">
+<link rel="stylesheet" href="/static/code-mirror/theme/solarized.css">
+<link rel="stylesheet" href="/static/code-mirror/addon/fold/foldgutter.css">
+<link rel="stylesheet" href="/static/code-mirror/addon/dialog/dialog.css">
+<style>
+    .td-edit-font{
+        font-size: 1.4rem;
+    }
+    .display-none{
+        display: none;
+    }
+</style>
+<div class="container td-edit-font">
+    <p>This is code mirror test</p>
+    <button class="btn btn-info" id="setValue">setValue</button>
+    <!--这个地方如果textarea标签之间有空格之类的，会被codemirror展示出来-->
+    <textarea id="editArea" name="editArea" class="display-none" cols="30" rows="10"></textarea>
+
+</div>
+
+
+<script src="/static/code-mirror/lib/codemirror.js"></script>
+<!--代码折叠start-->
+<script src="/static/code-mirror/addon/fold/foldcode.js"></script>
+<script src="/static/code-mirror/addon/fold/foldgutter.js"></script>
+<script src="/static/code-mirror/addon/fold/brace-fold.js"></script>
+<script src="/static/code-mirror/addon/fold/xml-fold.js"></script>
+<script src="/static/code-mirror/addon/fold/indent-fold.js"></script>
+<script src="/static/code-mirror/addon/fold/markdown-fold.js"></script>
+<script src="/static/code-mirror/addon/fold/comment-fold.js"></script>
+<!--代码折叠stop-->
+<!--代码查找start-->
+<script src="/static/code-mirror/addon/search/search.js"></script>
+<script src="/static/code-mirror/addon/search/searchcursor.js"></script>
+<script src="/static/code-mirror/addon/search/jump-to-line.js"></script>
+<script src="/static/code-mirror/addon/dialog/dialog.js"></script>
+<!--代码查找stop-->
+<script src="/static/code-mirror/mode/javascript/javascript.js"></script>
+
+<script>
+$(document).ready(function(){
+    //$('#editArea').val('//WNCBB');
+    var codeMirror=CodeMirror.fromTextArea(document.getElementById('editArea'), {
+        mode: 'javascript',
+        theme: 'solarized dark',
+        lineNumbers: true,
+        //why value doesn't
+        //value: '/*what the fuck*/',
+        //value: "//WNCBB",
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        //readOnly: true,
+        //自动换行
+        lineWrapping: true,
+        showCursorWhenSelecting: true,
+    });
+
+    $('#setValue').click(function(){
+        codeMirror.setValue('Reset contents');
+    });
+});
+</script>

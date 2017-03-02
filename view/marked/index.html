@@ -1,0 +1,28 @@
+<%- include('../public/header.html') %>
+
+<div id="showArea">
+</div>
+
+<div class="container">
+<!--resize:none; outline:none;去掉浏览器默认样式-->
+    <textarea id="writeArea" style="width:100%; height: 50rem; border: 0.001rem solid green; resize: none;">
+    </textarea>
+</div>
+
+<!--
+<input class="container" style="width:40rem; height: 100rem; border: 0.001rem solid red;" type="text" id="writeArea">
+</input>
+-->
+
+<script src="/static/js/marked.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#writeArea').bind('input', function(){
+            //$('#showArea').html(marked('#hello `abc` **cc** *dd*'));
+            $('#showArea').html(marked($('#writeArea').val().replace('<', '&lt;').replace('>', '&gt;').replace('/', '&#47;')));
+        });
+    });
+
+</script>
+
+

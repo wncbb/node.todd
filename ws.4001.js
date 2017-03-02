@@ -1,9 +1,7 @@
 /*
  *这里用nginx做了反向代理，然后请求会按照固定hash分配到内部4001，4002端口上。
  *HTTPS协议因为没有认证证书，浏览器会认为是不安全连接，需要添加意外
- *
- *
- * */
+ */
 
 var Koa=require('koa');
 var mount=require('koa-mount');

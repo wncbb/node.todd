@@ -132,6 +132,12 @@ app.use(mount('/view', viewRouter));
 var wsRouter=require('./router/ws.router.js');
 app.use(mount('/ws', wsRouter));
 
+var markedRouter=require('./router/marked.router.js');
+app.use(mount('/marked', markedRouter));
+
+var codeMirrorRouter=require('./router/codeMirror.router.js');
+app.use(mount('/code-mirror', codeMirrorRouter));
+
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
         case '/cnm':

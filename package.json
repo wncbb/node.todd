@@ -27,6 +27,7 @@
     "koa-router": "^7.0.1",
     "koa-static": "^2.1.0",
     "log4js": "^1.1.0",
+    "marked": "^0.3.6",
     "moment-timezone": "^0.5.11",
     "mysql2": "^1.1.2",
     "rndm": "^1.2.0",
