@@ -52,6 +52,10 @@ var midTest1=async(ctx, next)=>{
     ctx.moment=moment.tz.setDefault(config.time.zone);
     await next();
 }
+
+var errorMid=require('./mid/error.mid.js');
+app.use(errorMid());
+
 app.use(midTest1);
 /*
 var midTest2=(config)=>{
@@ -75,6 +79,7 @@ var midTest2=(config)=>{
 //app.use(midTest2({name:'todd', age:12}));
 //这个地方不用convert转成es6有报警
 app.use(convert(body()));
+//app.use(body());
 
 //db
 /*
@@ -131,14 +136,23 @@ app.use(mount('/view', viewRouter));
 //这个地方直接挂koa2应用
 var wsRouter=require('./router/ws.router.js');
 app.use(mount('/ws', wsRouter));
-/*
+
 //这里有js注入风险
 var markedRouter=require('./router/marked.router.js');
 app.use(mount('/marked', markedRouter));
-*/
+
 
 var codeMirrorRouter=require('./router/codeMirror.router.js');
 app.use(mount('/code-mirror', codeMirrorRouter));
+
+var editorRouter=require('./router/editor.router.js');
+app.use(mount('/editor', editorRouter));
+
+var mongoRouter=require('./router/mongo.router.js');
+app.use(mount('/mongo', mongoRouter));
+
+var articleRouter=require('./router/article.router.js');
+app.use(mount('/article', articleRouter));
 
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
@@ -167,7 +181,7 @@ app.use(async (ctx, next)=>{
             var secret=new Secret(ctx.db);
             var rst=await secret.create();
             ctx.body=JSON.stringify(rst);
-            ctx.body=JSON.stringify(await secret.verify(rst.secret));
+            //ctx.body=JSON.stringify(await secret.verify(rst.secret));
             break;
 /*
         default:

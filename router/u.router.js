@@ -7,7 +7,7 @@ router.get('/register', async(ctx, next)=>{
         password: ctx.query['password']||'',
         username: ctx.query['username']||'',
     });
-    if(registerRst.errCode<0){
+    if(registerRst.code<0){
         ctx.body=registerRst;
     }else{
         ctx.body={
@@ -25,14 +25,14 @@ router.get('/login', async(ctx, next)=>{
         account: ctx.query['account']||'',
         password: ctx.query['password']||'',
     });
-    if(loginRst.errCode<0){
+    if(loginRst.code<0){
         ctx.body=loginRst;
     }
     await ctx.s.destroy();
     var sessionRst=await ctx.s.createUser({
         userId: loginRst.userId,
     });
-    if(sessionRst.errCode<0){
+    if(sessionRst.code<0){
         ctx.body=sessionRst;
     }else{
         ctx.body=sessionRst;

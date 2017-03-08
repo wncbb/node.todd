@@ -11,6 +11,7 @@ router.get('/', async(ctx, next)=>{
 router.get('/way2', async(ctx, next)=>{
     //ctx.body=marked('#hello **world** ```hello```');
     var fs=require('fs');
+    
     await ctx.render('marked/way2', {
         showStr: marked(fs.readFileSync('md/docker.md','utf-8')),
     });

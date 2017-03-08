@@ -39,12 +39,12 @@ class User{
         password='',
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         var coreRst=await this.ctx.db.init({
             type0: 'core',
             type1: 'write0',
         });
-        if(coreRst.errCode<0){
+        if(coreRst.code<0){
             ret=coreRst;
             return ret;
         }
@@ -56,7 +56,7 @@ class User{
             secret,
         ]);
         ret.userId=qryRst[0].insertId;
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
@@ -69,13 +69,13 @@ class User{
         password: inPassword='',
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
 
         var accountRst=await this._checkAccount({
             account: inAccount,
             type: 'login',
         });
-        if(accountRst.errCode<0){
+        if(accountRst.code<0){
             ret=accountRst;
             return ret;
         }
@@ -84,7 +84,7 @@ class User{
             type0: 'core',
             type1: 'read0',
         });
-        if(coreRst.errCode<0){
+        if(coreRst.code<0){
             ret=coreRst;
             return ret;
         }
@@ -93,8 +93,8 @@ class User{
         var qryRst=await coreRst.con.query(qryStr, [inAccount]);
         
         if(1!=qryRst[0].length){
-            ret.errCode=-1;
-            ret.errMsg='账号或密码错误1';
+            ret.code=-1;
+            ret.msg='账号或密码错误1';
             return ret;
         }
         var userCoreInfo=qryRst[0][0];
@@ -103,10 +103,10 @@ class User{
             secret: userCoreInfo.secret,
         });
         if(encPassword!=userCoreInfo.password){
-            ret.errCode=-1;
-            ret.errMsg='账号或密码错误2';
+            ret.code=-1;
+            ret.msg='账号或密码错误2';
         }
-        ret.errCode=1;
+        ret.code=1;
         ret.userId=userCoreInfo.id;
         //like load
         this.userId=ret.userId;
@@ -122,13 +122,13 @@ class User{
         password='',
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         if(!/[0-9a-zA-Z]+/.test(password)){
-            ret.errCode=-1;
-            ret.errMsg='密码格式错误';
+            ret.code=-1;
+            ret.msg='密码格式错误';
             return ret;
         }
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
@@ -137,11 +137,11 @@ class User{
         type='register',
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         console.log('account:'+account);
         if(!/[0-9a-zA-Z\.\@\_\-]+/.test(account)){
-            ret.errCode=-1;
-            ret.errMsg='账号格式错误';
+            ret.code=-1;
+            ret.msg='账号格式错误';
             return ret;
         }
         switch(type){
@@ -150,7 +150,7 @@ class User{
                     type0: 'core',
                     type1: 'read0',
                 });
-                if(coreRst.errCode<0){
+                if(coreRst.code<0){
                     ret=coreRst;
                     return ret;
                 }
@@ -158,18 +158,18 @@ class User{
                 var qryStr=`select count(1) as num from ${User.coreDb.userCore} where account=? limit 1;`;
                 var qryRst=await coreRst.con.query(qryStr, [account]);
                 if(qryRst[0][0]['num']>0){
-                    ret.errCode=-1;
-                    ret.errMsg='已经存在该账号';
+                    ret.code=-1;
+                    ret.msg='已经存在该账号';
                 }else{
-                    ret.errCode=1;
+                    ret.code=1;
                 }
                 break;
             case 'login':
-                ret.errCode=1;
+                ret.code=1;
                 break;
             default: 
-                ret.errCode=-1;
-                ret.errMsg='账号类型错误';
+                ret.code=-1;
+                ret.msg='账号类型错误';
                 break;
         }
 
@@ -182,20 +182,20 @@ class User{
         username='',
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
 
         var checkAccount=await this._checkAccount({
             account: account,
             type: 'register',
         });
-        if(checkAccount.errCode<0){
+        if(checkAccount.code<0){
             ret=checkAccount;
             return ret;
         }
         var checkPassword=this._checkPassword({
             password: password,
         });
-        if(checkPassword.errCode<0){
+        if(checkPassword.code<0){
             ret=checkPassword;
             return ret;
         }
@@ -213,7 +213,7 @@ class User{
             secret: uInfo.secret,
             password: uInfo.password,
         });
-        if(saveCoreRst.errCode<0){
+        if(saveCoreRst.code<0){
             ret=saveCoreRst;
             return ret;
         }
@@ -225,12 +225,12 @@ class User{
             password: uInfo.password,
             userId: uInfo.userId,
         });  
-        if(saveFastRst.errCode<0){
+        if(saveFastRst.code<0){
             ret=saveFastRst;
             return ret;
         }
 
-        ret.errCode=1;
+        ret.code=1;
         ret.userId=uInfo.userId;
         return ret;
     }
@@ -241,11 +241,11 @@ class User{
         userId=-1,
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
 
         if(-1==userId){
-            ret.errCode=-1;
-            ret.errMsg='用户id错误';
+            ret.code=-1;
+            ret.msg='用户id错误';
             return ret;
         }
 
@@ -253,7 +253,7 @@ class User{
             type0: 'fast',
             type1: 'write0',
         });
-        if(fastRst.errCode<0){
+        if(fastRst.code<0){
             ret=fastRst;
             return ret;
         }
@@ -261,7 +261,7 @@ class User{
             account: account,
             secret: secret,
         });
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
@@ -269,17 +269,17 @@ class User{
         userId=-1,
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         if(-1==userId){
-            ret.errCode=-1;
-            ret.errMsg='load user info error because the userId is -1';
+            ret.code=-1;
+            ret.msg='load user info error because the userId is -1';
             return ret;
         }
         var fastRst=await this.ctx.db.init({
             type0: 'fast',
             type1: 'write0',
         });
-        if(fastRst.errCode<0){
+        if(fastRst.code<0){
             ret=fastRst;
             return ret;
         }
@@ -287,7 +287,7 @@ class User{
         if(this.userInfo){
             this.userId=userId;
         }
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
@@ -325,7 +325,7 @@ module.exports=(inArg)=>{
         await ctx.u.load({
             userId: ctx.s.webInfo.userId||-1,
         });
-        console.log(ctx.u.uInfo);
+        //console.log(ctx.u.uInfo);
         await next();
     }
 }

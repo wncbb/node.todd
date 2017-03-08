@@ -4,8 +4,8 @@ var router=new Router();
 router.post('/register', async(ctx, next)=>{
     if(ctx.u.isLogin()){
         ctx.body={
-            errCode: -1,
-            errMsg: '未登录状态才可以注册',
+            code: -1,
+            msg: '未登录状态才可以注册',
         };
         return;
     }
@@ -15,7 +15,7 @@ router.post('/register', async(ctx, next)=>{
         account: ctx.request.fields.account,
         password: ctx.request.fields.password,
     });
-    if(registerRst.errCode<0){
+    if(registerRst.code<0){
         ctx.body=registerRst;
         return;
     }
@@ -23,7 +23,7 @@ router.post('/register', async(ctx, next)=>{
     var sessionRst=await ctx.s.createUser({
         userId: registerRst.userId,
     });
-    if(sessionRst.errCode<0){
+    if(sessionRst.code<0){
         ctx.body=sessionRst;
     }else{
         ctx.body=sessionRst;
@@ -35,8 +35,8 @@ router.post('/register', async(ctx, next)=>{
 router.post('/login', async(ctx, next)=>{
     if(ctx.u.isLogin()){
         ctx.body={
-            errCode: -1,
-            errMsg: '未登录状态才可以登录',
+            code: -1,
+            msg: '未登录状态才可以登录',
         };
         return;
     }
@@ -45,7 +45,7 @@ router.post('/login', async(ctx, next)=>{
         password: ctx.request.fields.password,
     });
     console.log(loginRst);
-    if(loginRst.errCode<0){
+    if(loginRst.code<0){
         ctx.body=loginRst;
         return;
     }
@@ -53,7 +53,7 @@ router.post('/login', async(ctx, next)=>{
     var sessionRst=await ctx.s.createUser({
         userId: loginRst.userId,
     });
-    if(sessionRst.errCode<0){
+    if(sessionRst.code<0){
         ctx.body=sessionRst;
     }else{
         ctx.body=sessionRst;
@@ -65,8 +65,8 @@ router.post('/login', async(ctx, next)=>{
 router.get('/logout', async(ctx, next)=>{
     if(!ctx.u.isLogin()){
         this.body={
-            errCode: -1,
-            errMsg: '登录之后才可以退出登录',
+            code: -1,
+            msg: '登录之后才可以退出登录',
         };
         return;
     }

@@ -57,18 +57,18 @@ config={
   }
   async makeFast(inArg){
     var ret={};
-    ret.errCode=-1;
+    ret.code=-1;
     var needConfig;
 
     if(inArg.type in this.config['fast']){
       needConfig=this.config['fast'][inArg.type];
-      ret.errCode=1;
+      ret.code=1;
     }else{
-      ret.errCode=-10001;
-      ret.errMsg='type1 wrong';
+      ret.code=-10001;
+      ret.msg='type1 wrong';
     }
 
-    if(1==ret.errCode){
+    if(1==ret.code){
       ret.con=new IoRedis(needConfig);
     }
     return ret;
@@ -77,18 +77,18 @@ config={
 
   async makeCore(inArg){
     var ret={};
-    ret.errCode=-1;
+    ret.code=-1;
     var needConfig;
 
     if(inArg.type in this.config['core']){
       needConfig=this.config['core'][inArg.type];
-      ret.errCode=1;
+      ret.code=1;
     }else{
-      ret.errCode=-2001;
-      ret.errMsg='type1 wrong';
+      ret.code=-2001;
+      ret.msg='type1 wrong';
     }
 
-    if(1==ret.errCode){
+    if(1==ret.code){
       ret.con=await mysql2pro.createConnection({
         host: needConfig.host,
         port: needConfig.port||3306,
@@ -108,22 +108,22 @@ inArg: {
 */
   async init(inArg){
     var ret={};
-    ret.errCode=-1;
+    ret.code=-1;
     switch(inArg.type0){
         case 'core':
             break;
         case 'fast':
             break;
         default:
-            ret.errCode=-1;
-            ret.errMsg=`unknown type0=${inArg.type0}`;
+            ret.code=-1;
+            ret.msg=`unknown type0=${inArg.type0}`;
             return ret;
             break;
     }
 
     if(!this.config[inArg.type0][inArg.type1]){
-        ret.errCode=-1;
-        ret.errMsg=`unknown type1=${inArg.type1}`;
+        ret.code=-1;
+        ret.msg=`unknown type1=${inArg.type1}`;
         return ret;
     }
 
@@ -133,8 +133,8 @@ inArg: {
           var tmpRst=await this.makeCore({
             type: inArg.type1
           });
-          if(1==tmpRst.errCode){
-            ret.errCode=1;
+          if(1==tmpRst.code){
+            ret.code=1;
             this[inArg.type0][inArg.type1]=tmpRst.con;
           }
           break;
@@ -142,8 +142,8 @@ inArg: {
           var tmpRst=await this.makeFast({
             type: inArg.type1
           });
-          if(1==tmpRst.errCode){
-            ret.errCode=1;
+          if(1==tmpRst.code){
+            ret.code=1;
             this[inArg.type0][inArg.type1]=tmpRst.con;
           }
           break;
@@ -151,9 +151,9 @@ inArg: {
           break;
       }
     }else{
-      ret.errCode=1;
+      ret.code=1;
     }
-    if(1==ret.errCode){
+    if(1==ret.code){
       ret.con=this[inArg.type0][inArg.type1];
     }
 

@@ -4,6 +4,7 @@ staticFile/static/audio/
 staticFile/static/vedio/
 logs/
 .idea/
+idea/
 md/
 nginx/
 **/.DS_Store

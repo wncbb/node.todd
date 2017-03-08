@@ -49,7 +49,7 @@ class Session{
     async verify(){
         
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         var status='init';
         var reqS=this.ctx.cookies.get(this.config.webKey);
         if(!reqS){
@@ -60,7 +60,7 @@ class Session{
             type0: 'fast',
             type1: 'read0',
         });
-        if(fastRst.errCode<0){
+        if(fastRst.code<0){
             ret=fastRst;
             return ret;
         }
@@ -117,18 +117,18 @@ class Session{
                 await this.createGuest();
                 break;
         }
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
     async noAuthUpdate({s, info}={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         var fastRst=await this.ctx.db.init({
             type0: 'fast',
             type1: 'write0',
         });
-        if(fastRst.errCode<0){
+        if(fastRst.code<0){
             ret=fastRst;
             return ret;
         }
@@ -149,13 +149,13 @@ class Session{
             path: this.config.path,
         });
 
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
     async createGuest(){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         var webS=this.generate([
             this.ctx.request.ip,
         ]);
@@ -172,7 +172,7 @@ class Session{
 
         //设置redis
         var setFastRst=await this.setFast(webInfo, {ttl: fastKeyTtl});
-        if(setFastRst.errCode<0){
+        if(setFastRst.code<0){
             ret=setFastRst;
             return ret;
         }
@@ -184,7 +184,7 @@ class Session{
             maxAge: this.config.guestMaxAge*1000,
             path: this.config.path,
         });
-        ret.errCode=1;
+        ret.code=1;
         ret.webS;
         ret.webInfo;
         return ret;
@@ -193,7 +193,7 @@ class Session{
         userId=0,
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
 
         if(0==userId){
             ret=await this.createGuest();
@@ -218,7 +218,7 @@ class Session{
 
         //设置redis
         var setFastRst=await this.setFast(webInfo, {ttl: fastKeyTtl});
-        if(setFastRst.errCode<0){
+        if(setFastRst.code<0){
             ret=setFastRst;
             return ret;
         }
@@ -230,7 +230,7 @@ class Session{
             maxAge: this.config.userMaxAge*1000,
             path: this.config.path,
         });
-        ret.errCode=1;
+        ret.code=1;
         ret.webS;
         ret.webInfo;
         return ret;
@@ -238,18 +238,18 @@ class Session{
 
     async destroy(){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         var fastRst=await this.ctx.db.init({
             type0: 'fast',
             type1: 'write0',
         });
-        if(fastRst.errCode<0){
+        if(fastRst.code<0){
             ret=fastRst;
             return ret;
         }
         console.log('del:'+Session.fastKey['webS']+this.webS);
         await fastRst.con.del(Session.fastKey['webS']+this.webS);
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
@@ -257,7 +257,7 @@ class Session{
         userId=0
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         if(0==userId){
             return ret;
         }
@@ -269,14 +269,14 @@ class Session{
             updateTimestamp: curTimestamp,
         };
         var delRst=await this.destroy();
-        if(delRst.errCode<0){
+        if(delRst.code<0){
             ret=delRst
             return ret;
         }
         var createRst=await create({
             userId: userId,
         });
-        if(createRst.errCode<0){
+        if(createRst.code<0){
             ret=createRst;
             return ret;
         }
@@ -286,25 +286,25 @@ class Session{
 
     async logout(){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         var delRst=await this.destroy();
-        if(delRst.errCode<0){
+        if(delRst.code<0){
             ret=delRst;
             return ret;
         }
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
 
     async delFast(data){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         var fastRst=await this.ctx.db.init({
             type0: 'fast',
             type1: 'write0',
         });
-        if(fastRst.errCode<0){
+        if(fastRst.code<0){
             ret=fastRst;
             return ret;
         }
@@ -314,7 +314,7 @@ class Session{
             delete(this.webInfo[val]);
         }
         await multi.exec();
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
@@ -325,12 +325,12 @@ class Session{
         ttl=undefined
     }={}){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         var fastRst=await this.ctx.db.init({
             type0: 'fast',
             type1: 'write0',
         });
-        if(fastRst.errCode<0){
+        if(fastRst.code<0){
             ret=fastRst;
             return ret;
         }
@@ -344,51 +344,51 @@ class Session{
                 .exec();
         }
         Object.assign(this.webInfo, data);
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
 
     del(data){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         for(let val of data){
             delete(this.webInfo[val]);
         }
         this.webOp.push({type:'del', data:data});
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
     set(data){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         Object.assign(this.webInfo, data);
         this.webOp.push({type:'set', data:data});
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
     get(data){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         ret.pl={};
         for(let val of data){
             ret.pl[val]=this.webInfo[val];
         }
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     }
 
     async updateFast(){
         var ret={};
-        ret.errCode=-1;
+        ret.code=-1;
         
         var fastRst=await this.ctx.db.init({
             type0: 'fast',
             type1: 'write0',
         });
-        if(fastRst.errCode<0){
+        if(fastRst.code<0){
             ret=fastRst;
             return ret;
         }
@@ -410,7 +410,7 @@ class Session{
         }
         var tmp=await multi.exec();
         this.webOp=[];
-        ret.errCode=1;
+        ret.code=1;
         return ret;
     } 
 

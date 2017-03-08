@@ -1,24 +1,37 @@
-<%- include('../public/header.html') %>
+<%- include('../public/header.html'); %>
 
 <link rel="stylesheet" href="/static/code-mirror/lib/codemirror.css">
 <link rel="stylesheet" href="/static/code-mirror/theme/solarized.css">
 <link rel="stylesheet" href="/static/code-mirror/addon/fold/foldgutter.css">
 <link rel="stylesheet" href="/static/code-mirror/addon/dialog/dialog.css">
+<link rel="stylesheet" href="/static/prism/prism.css">
+<link rel="stylesheet" href="/static/css/github-markdown.css">
+
 <style>
-    .td-edit-font{
-        font-size: 1.4rem;
-    }
-    .display-none{
-        display: none;
-    }
+.border + .border{
+  border-top: 1px solid #b6b6b6;
+  border-left: 1px solid #b6b6b6;
+}
+
 </style>
-<div class="container td-edit-font">
-    <p>This is code mirror test</p>
-    <button class="btn btn-info" id="setValue">setValue</button>
-    <!--这个地方如果textarea标签之间有空格之类的，会被codemirror展示出来-->
-    <textarea id="editArea" name="editArea" class="display-none" cols="30" rows="10"></textarea>
+
+<button class="btn btn-info" id="save">
+    SAVE
+</button>
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="editor-wrap col-lg-6 col-md-6 col-sm-6 col-xs-6 border">
+      <textarea name="editor" id="editor" cols="30" rows="10"></textarea>
+    </div>
+    <div class="preview-wrap col-lg-6 col-md-6 col-sm-6 col-xs-6 border">
+      <div class="markdown-body"></div>
+    </div>
+  </div>
 
 </div>
+
 
 
 <script src="/static/code-mirror/lib/codemirror.js"></script>
@@ -30,7 +43,6 @@
 <script src="/static/code-mirror/addon/fold/indent-fold.js"></script>
 <script src="/static/code-mirror/addon/fold/markdown-fold.js"></script>
 <script src="/static/code-mirror/addon/fold/comment-fold.js"></script>
-<script src="/static/code-mirror/addon/selection/active-line.js"></script>
 <!--代码折叠stop-->
 <!--代码查找start-->
 <script src="/static/code-mirror/addon/search/search.js"></script>
@@ -39,28 +51,12 @@
 <script src="/static/code-mirror/addon/dialog/dialog.js"></script>
 <!--代码查找stop-->
 <script src="/static/code-mirror/mode/javascript/javascript.js"></script>
+<script src="/static/code-mirror/mode/markdown/markdown.js"></script>
 
-<script>
-$(document).ready(function(){
-    //$('#editArea').val('//WNCBB');
-    var codeMirror=CodeMirror.fromTextArea(document.getElementById('editArea'), {
-        mode: 'javascript',
-        theme: 'solarized dark',
-        lineNumbers: true,
-        //why value doesn't
-        //value: '/*what the fuck*/',
-        //value: "//WNCBB",
-        foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-        //readOnly: true,
-        //自动换行
-        lineWrapping: true,
-        showCursorWhenSelecting: true,
-        styleActiveLine: true,
-    });
-    window.codeMirror=codeMirror;
-    $('#setValue').click(function(){
-        codeMirror.setValue('Reset contents');
-    });
-});
-</script>
+<script src="/static/prism/prism.js"></script>
+<script src="/static/js/marked.js"></script>
+
+<script src="/static/js/editor/editor-m.js"></script>
+
+
+
