@@ -146,7 +146,7 @@ test1Ws.on('connection', function(socket){
     //console.log(util.inspect(socket));
     console.log('cJoinRoom:');
     console.log(util.inspect(data, true, 10, true));
-    var msg=`joins the room(${data.roomId}) serverId:4001`;
+    var msg=`joins the room(${data.roomId}) serverId:4003`;
     test1Ws.to(data.roomId).emit('sJoinRoom', {
       name: data.name,
       msg: msg 
@@ -160,7 +160,7 @@ test1Ws.on('connection', function(socket){
 });
 
 
-server.listen(4001);
+server.listen(4003);
 
 
 

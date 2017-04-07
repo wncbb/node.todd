@@ -154,6 +154,9 @@ app.use(mount('/mongo', mongoRouter));
 var articleRouter=require('./router/article.router.js');
 app.use(mount('/article', articleRouter));
 
+var infoRouter=require('./router/info.router.js');
+app.use(mount('/info', infoRouter));
+
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
         case '/cnm':
@@ -168,6 +171,7 @@ app.use(async (ctx, next)=>{
             //ctx.body="1234";
             ctx.body=ctx.pa+' '+util.inspect(ctx.s.get(['namea']));
             break;
+/*
         case '/info':
             ctx.body={
                 webS: ctx.s.webS, 
@@ -176,6 +180,7 @@ app.use(async (ctx, next)=>{
                 date: moment.tz(1000*ctx.s.webInfo.createTimestamp, config.time.zone).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
             };
             break;
+*/
         case '/secret':
             var Secret=require('./service/secret.srv.js');
             var secret=new Secret(ctx.db);
@@ -183,6 +188,10 @@ app.use(async (ctx, next)=>{
             ctx.body=JSON.stringify(rst);
             //ctx.body=JSON.stringify(await secret.verify(rst.secret));
             break;
+        case '/map':
+            await ctx.render('map/baidu', {
+                title: 'map',
+            });
 /*
         default:
             //ctx.body='The address you are looking for is missing...';

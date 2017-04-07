@@ -1,3 +1,5 @@
 class Article{
-  constructor
+  constructor(){
+    
+  }
 }

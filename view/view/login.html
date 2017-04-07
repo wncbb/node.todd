@@ -58,7 +58,7 @@ $('#register-submit').click(function(e){
         success: function(rsp){
             console.log('Success:');
             console.log(rsp);
-            if(rsp.errCode>0){
+            if(rsp.code>0){
                 window.location.href='/view/user';
             }
         },

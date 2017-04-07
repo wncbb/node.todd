@@ -62,7 +62,10 @@
 
 <script>
   //var ws=io('ws://ws.wncbb.io:<%=port%>');
-  var ws=io('ws://ws.wncbb.io:5000');
+  var ws=io('ws://ws.wncbb.io:5000?name=todd', {
+    path: '/alice',
+  });
+  console.log(ws);
   //var ws=io('ws://192.168.12.119:<%=port%>');
   //ws.Manager('ws://192.168.12.119:<%=port%>', {path: '/todd'});
 

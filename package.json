@@ -4,7 +4,8 @@
   "description": "This is todd's node koa2 test",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --harmony index.js"
   },
   "repository": {
     "type": "git",
@@ -34,5 +35,9 @@
     "rndm": "^1.2.0",
     "socket.io": "^1.7.3",
     "socket.io-redis": "^4.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-uglify": "^2.1.2"
   }
 }
