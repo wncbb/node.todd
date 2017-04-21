@@ -322,10 +322,12 @@ User.config={
 module.exports=(inArg)=>{
     return async(ctx, next)=>{
         ctx.u=new User(ctx, inArg);
+        console.log('u.mid.js:325 '+JSON.stringify(ctx.s.sInfo));
         await ctx.u.load({
-            userId: ctx.s.webInfo.userId||-1,
+            userId: ctx.s.sInfo.userId||-1,
         });
-        //console.log(ctx.u.uInfo);
+        ctx.v.userId=ctx.u.userId;
+        console.log(ctx.u.userInfo);
         await next();
     }
 }

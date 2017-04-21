@@ -6,10 +6,13 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item <%if('view/index'==locals.path){%>active<%}%>">
+      <li class="nav-item <%if('view/index'==path){%>active<%}%>">
         <a class="nav-link" href="/view/index">Home <span class="sr-only">(current)</span></a>
       </li>
-      <%if(locals.userId>0){%>
+      <li class="nav-item <%if('article/list'==path){%>active<%}%>">
+        <a class="nav-link" href="/view/list">list <span class="sr-only">(current)</span></a>
+      </li>
+      <%if(locals.v.userId>0){%>
       <li class="nav-item <%if('view/logout'==locals.path){%>active<%}%>">
         <a class="nav-link" href="/user/logout">Logout</a>
       </li>

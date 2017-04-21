@@ -11,6 +11,7 @@ router.get('/register', async(ctx, next)=>{
         path: 'view/register',
         title: 'view/register',
         userId: ctx.u.userId,
+        v: ctx.v,
     });
 });
 
@@ -23,28 +24,30 @@ router.get('/login', async(ctx, next)=>{
         path: 'view/login',
         title: 'view/login',
         userId: ctx.u.userId,
+        v: ctx.v,
     });
 });
 
 router.get('/user', async(ctx, next)=>{
-    var tmp=ctx.moment(ctx.s.webInfo.createTimestamp*1000).format();
+    var tmp=ctx.moment(ctx.s.sInfo.createTimestamp*1000).format();
     console.log(tmp);
     await ctx.render('view/user', {
         path: 'view/user',
         title: 'view/user',
-        webS: ctx.s.webS,
+        s: ctx.s.s,
         //webInfo: JSON.stringify(ctx.s.webInfo),
-        webInfo: {
-            createTimestamp: ctx.moment(ctx.s.webInfo.createTimestamp*1000).format(),
-            updateTimestamp: ctx.moment(ctx.s.webInfo.updateTimestamp*1000).format(),
-            type: ctx.s.webInfo.type,
-            userId: ctx.s.webInfo.userId,
+        sInfo: {
+            createTimestamp: ctx.moment(ctx.s.sInfo.createTimestamp*1000).format(),
+            updateTimestamp: ctx.moment(ctx.s.sInfo.updateTimestamp*1000).format(),
+            type: ctx.s.sInfo.type,
+            userId: ctx.s.sInfo.userId,
         },
-        userInfo: {
+        uInfo: {
             account: ctx.u.userInfo.account,
             secret: ctx.u.userInfo.secret,
         },
         userId: ctx.u.userId,
+        v: ctx.v,
 
     });
 });
@@ -54,6 +57,7 @@ router.get('/index', async(ctx, next)=>{
         path: 'view/index',
         title: 'view/index',
         userId: ctx.u.userId,
+        v: ctx.v,
     });
 });
 

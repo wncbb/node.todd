@@ -16,7 +16,10 @@
     <p>This is code mirror test</p>
     <button class="btn btn-info" id="setValue">setValue</button>
     <!--这个地方如果textarea标签之间有空格之类的，会被codemirror展示出来-->
-    <textarea id="editArea" name="editArea" class="display-none" cols="30" rows="10"></textarea>
+    <div id="editOuterBox">
+        <textarea id="editArea" name="editArea" class="display-none" cols="30" rows="10">
+    </div>
+    </textarea>
 
 </div>
 
@@ -41,10 +44,16 @@
 <script src="/static/code-mirror/mode/javascript/javascript.js"></script>
 
 <script>
+// var myCodeMirror = CodeMirror(document.body, {
+//     value: 'var a=12; function test(){a=a+12;}',
+//     mode: 'javascript',
+// });
+
 $(document).ready(function(){
     //$('#editArea').val('//WNCBB');
     var codeMirror=CodeMirror.fromTextArea(document.getElementById('editArea'), {
-        mode: 'javascript',
+        //mode: 'javascript',
+        mode: 'markdown',
         theme: 'solarized dark',
         lineNumbers: true,
         //why value doesn't
@@ -57,10 +66,12 @@ $(document).ready(function(){
         lineWrapping: true,
         showCursorWhenSelecting: true,
         styleActiveLine: true,
+        autoMatchParens: true,
     });
     window.codeMirror=codeMirror;
     $('#setValue').click(function(){
         codeMirror.setValue('Reset contents');
     });
 });
+
 </script>

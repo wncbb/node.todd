@@ -31,19 +31,22 @@ $(document).ready(function(){
     lineWrapping: true,  // 长句子折行
     //theme: "material",
     //keyMap: 'sublime',
-    extraKeys: {"Enter": "newlineAndIndentContinueMarkdownList"}
+    extraKeys: {"Enter": "newlineAndIndentContinueMarkdownList"},
+    width: '100%',
+    height: '100%',
+    autoMatchParens: true,
   });
   editor.on('change', editorOnHandler);
   
 
 
-  $('#save').on('click', function(){
+  $('#saveArticle').on('click', function(){
     $.ajax({
       url: '/article/save',
       type: 'POST',
       data: {
         text: editor.getValue(),
-        title: 'title'+(new Date(0)),
+        title: $('#articleTitle').val(),
       },
       success: function(rsp){
         console.log('fromServer:SUCCESS: '+JSON.stringify(rsp));

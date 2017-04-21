@@ -53,6 +53,7 @@ router.post('/login', async(ctx, next)=>{
     var sessionRst=await ctx.s.createUser({
         userId: loginRst.userId,
     });
+    console.log('sessionRst: '+JSON.stringify(sessionRst));
     if(sessionRst.code<0){
         ctx.body=sessionRst;
     }else{

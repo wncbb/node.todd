@@ -5,6 +5,8 @@ var router=new Router();
 router.get('/', async(ctx, next)=>{
     await ctx.render('codeMirror/index', {
         title: 'code/js',
+        v: ctx.v,
+        path: '',
     });
 });
 

@@ -8,29 +8,38 @@
 <link rel="stylesheet" href="/static/css/github-markdown.css">
 
 <style>
-.border + .border{
-  border-top: 1px solid #b6b6b6;
-  border-left: 1px solid #b6b6b6;
-}
 
 </style>
 
-<button class="btn btn-info" id="save">
-    SAVE
-</button>
-
-<div class="container-fluid">
-
+<form class="container form">
   <div class="row">
-    <div class="editor-wrap col-lg-6 col-md-6 col-sm-6 col-xs-6 border">
-      <textarea name="editor" id="editor" cols="30" rows="10"></textarea>
-    </div>
-    <div class="preview-wrap col-lg-6 col-md-6 col-sm-6 col-xs-6 border">
-      <div class="markdown-body"></div>
+    <input type="text" class="form-control col-12 border-0" id="articleTitle" name="articleTitle" placeholder="请填写标题">
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btn-sm btn-info">&plus;</button>
+
     </div>
   </div>
 
-</div>
+  <div class="row">
+    <div class="col-12 btn-group">
+      <button class="btn btn-sm btn-outline-info" id="another">Another</button>
+      <button class="btn btn-sm btn-outline-info" id="saveArticle">Save</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="editor-wrap col-md-6 col-sm-12 border">
+      <textarea name="editor" id="editor"></textarea>      
+    </div>
+    <div class="preview-wrap col-md-6 col-sm-12 border">
+      <div class="markdown-outer" style="overflow-y: scroll;">
+        <div class="markdown-body"></div>
+      </div>
+    </div>
+  </div>
+
+</form>
 
 
 
@@ -53,10 +62,20 @@
 <script src="/static/code-mirror/mode/javascript/javascript.js"></script>
 <script src="/static/code-mirror/mode/markdown/markdown.js"></script>
 
-<script src="/static/prism/prism.js"></script>
+<script src="/static/prism/prism-1.js"></script>
 <script src="/static/js/marked.js"></script>
 
 <script src="/static/js/editor/editor-m.js"></script>
 
-
+<script>
+  $(document).ready(function(){
+      $('.CodeMirror').css('height', ($(window).height()-100)+'px');
+      $('.markdown-outer').css('height', ($(window).height()-100)+'px');
+      $(window).resize(function() {
+        $('.CodeMirror').css('height', ($(window).height()-100)+'px');
+        $('.markdown-outer').css('height', ($(window).height()-100)+'px');
+        console.log($(window).height());
+      });
+  });
+</script>
 

@@ -17,6 +17,7 @@ var moment=require('moment-timezone');
 
 var convert=require('koa-convert');
 
+
 /*
 var init=()=>{
     global.wd=process.cwd();
@@ -80,6 +81,11 @@ var midTest2=(config)=>{
 //这个地方不用convert转成es6有报警
 app.use(convert(body()));
 //app.use(body());
+
+
+//v
+var v=require('./mid/v.mid.js');
+app.use(v());
 
 //db
 /*
