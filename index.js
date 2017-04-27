@@ -1,4 +1,8 @@
 "use strict";
+//获取web配置文件
+var config=require('./config/web.json');
+global.config=config;
+
 var Koa=require('koa');
 var process=require('process');
 var util=require('util');
@@ -25,8 +29,6 @@ var init=()=>{
 init();
 */
 
-//获取web配置文件
-var config=require('./config/web.json');
 
 var app=new Koa();
 
