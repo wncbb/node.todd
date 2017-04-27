@@ -3,7 +3,7 @@ mongoose.Promise=global.Promise;
 //var db=mongoose.connect('mongodb://localhost/xiaoyu');
 //var db=mongoose.connect('mongodb://test:test123@127.0.0.1:30002/xiaoyu');
 //var db=mongoose.connect('mongodb://test:test123@localhost:30002/test');
-var loginStr='mongodb://'+global.config.db.huge['0_0'].user+':'+global.config.db.huge['0_0'].pwd+'@'+global.config.db.huge['0_0'].host+':'+global.config.db.huge['0_0'].port+'/'+global.config.db.huge['0_0'].db;
+var loginStr='mongodb://'+global.config.db.huge.mongo_0_0.user+':'+global.config.db.huge.mongo_0_0.pwd+'@'+global.config.db.huge.mongo_0_0.host+':'+global.config.db.huge.mongo_0_0.port+'/'+global.config.db.huge.mongo_0_0.db;
 console.log(loginStr);
 var db=mongoose.connect(loginStr);
 //var db=new mongoose.Mongoose('mongodb://localhost/xiaoyu');
