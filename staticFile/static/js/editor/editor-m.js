@@ -40,15 +40,21 @@ $(document).ready(function(){
   
 
 
-  $('#saveArticle').on('click', function(){
+  $('#saveArticle').on('click', function(e){
+    e.preventDefault();
     $.ajax({
       url: '/article/save',
       type: 'POST',
       data: {
+        id: $('#articleId').val(),
         text: editor.getValue(),
         title: $('#articleTitle').val(),
+        category: $('#articleCategory').val(),
       },
       success: function(rsp){
+        if(rsp.code>0){
+          $('#articleId').val(rsp.data.id);
+        }
         console.log('fromServer:SUCCESS: '+JSON.stringify(rsp));
       },
       error: function(err){

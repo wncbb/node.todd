@@ -11,11 +11,12 @@ var db=mongoose.connect(loginStr);
 var bluePrint={
     article: {
         schema: {
-            userid: String,
+            userId: String,
             title: String,
             text: String,
             createTime: {type: Date, default: Date.now},
             updateTime: {type: Date, default: Date.now},
+            category: String,
         },
         name: 'article',
     },

@@ -2,16 +2,47 @@
 <%- include('../public/header.html') %>
 
 <div class="container">
-    <hr>
-    <div class="jumbotron">
-        <h1 class="display-4">
-            Wncbb's web
-        </h1>
-        <p class="lead">This is wncbb's personal web. Hahaha~~~</p>
-        <hr class="my-4">
-        
-        
+    <div class="row">
+
+        <div class="col-12 col-md-3">
+            <div class="jumbotron">
+                <h4>
+                    Wncbb's web
+                </h4>
+                <p class="lead">This is Wncbb's personal web. Hahaha~~~</p>
+                <hr class="my-4">
+                <p>Just for fun</p>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-9">
+
+          <% for(var i=0; i<articleList.length; i++) {%>
+            <div class="card w-100">
+              <div class="card-block">
+                <a class="card-title" href="/article/show?id=<%= articleList[i]._id %>">
+                  <%= articleList[i].title %>
+                  <span class="text-muted small">
+                    <%= articleList[i].updateTime %>
+                  </span>
+                </a>
+              </div>
+            </div>
+          <% } %>
+
+<!--             <div class="card w-100">
+                <div class="card-block">
+                    <a class="card-title" href="http://www.baidu.com">
+                        mysql主从设置
+                        <span class="text-muted small">2017-02-12</span>
+                    </a>
+                </div>
+            </div> -->
+
+        </div>
+
     </div>
+
 </div>
 
 
