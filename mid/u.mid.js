@@ -178,7 +178,7 @@ class User{
             case 'register':
                 var coreRst=await this.ctx.db.init({
                     type0: 'core',
-                    type1: 'read0',
+                    type1: 'write0',
                 });
                 if(coreRst.code<0){
                     ret=coreRst;
