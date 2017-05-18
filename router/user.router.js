@@ -5,15 +5,15 @@ router.post('/register', async(ctx, next)=>{
     if(ctx.u.isLogin()){
         ctx.body={
             code: -1,
-            msg: '未登录状态才可以注册',
+            msg: '未登录状态才可以注册.router.user.8',
         };
         return;
     }
-    console.log(`ctx.request.body ${ctx.request.body}`);
     //ctx.body=ctx.request.fields;    
     var registerRst=await ctx.u.register({
         account: ctx.request.fields.account,
         password: ctx.request.fields.password,
+        ip: ctx.request.ip,
     });
     if(registerRst.code<0){
         ctx.body=registerRst;
@@ -43,6 +43,7 @@ router.post('/login', async(ctx, next)=>{
     var loginRst=await ctx.u.login({
         account: ctx.request.fields.account,
         password: ctx.request.fields.password,
+        ip: ctx.request.ip,
     });
     console.log(loginRst);
     if(loginRst.code<0){
@@ -73,7 +74,7 @@ router.get('/logout', async(ctx, next)=>{
     }
     await ctx.s.destroy();
     await ctx.s.createGuest();
-    ctx.response.redirect('/view/index');
+    ctx.response.redirect('/');
 });
 
 router.get('/user', async(ctx, next)=>{

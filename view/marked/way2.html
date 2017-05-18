@@ -1,8 +1,65 @@
 <%- include('../public/header.html') %>
+<% if(false) { %>
 <link rel="stylesheet" href="/static/css/github-markdown.css">
 <link rel="stylesheet" href="/static/prism/prism.css">
 <script src="/static/prism/prism.js"></script>
+<% } else { %>
+<link rel="stylesheet" href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css">
+<link rel="stylesheet" href="http://cdn.bootcss.com/github-markdown-css/2.6.0/github-markdown.min.css">
+<script src="/static/prism/prism-1.js"></script>
+<!--
+<script src="http://cdn.bootcss.com/prism/9000.0.1/prism.min.js"></script>
+<script src="http://cdn.bootcss.com/prism/9000.0.1/components/prism-markdown.min.js"></script>
+-->
+<% } %>
+
 <div class="container">
-<%-locals.showStr%>
+  <% if(canEdit){ %>
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btn-danger" id="editBtn">Edit</button>
+      <button class="btn btn-danger" id="deleteBtn">Delete</button>
+    </div>
+  </div>
+  <% } %>
 </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12 markdown-body">
+      <%-locals.articleInfo.text%>
+
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function(){
+    window.wncbb={};
+    window.wncbb.article={
+      id: '<%= articleId %>',
+    };
+    $('#editBtn').click(function(){
+      window.location.href="/article/"+window.wncbb.article.id+"?ac=edit";
+    });
+    $('#deleteBtn').click(function(){
+      //window.location.href="/article/delete?articleId="+window.wncbb.article.id;
+      $.ajax({
+        url: '/article/'+window.wncbb.article.id,
+        type: 'POST',
+        data: {
+          ac: 'delete',
+          articleId: window.wncbb.article.id,
+        },
+        success: function(rsp){
+          console.log('Success:');
+          console.log(rsp);
+        },
+        error: function(err){
+          console.log('Error:');
+          console.log(err);
+        },
+      });
+    });  
+  });
+</script>
 

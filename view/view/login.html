@@ -43,23 +43,27 @@
     
     </form>
 </div>
+
+<script src="http://cdn.bootcss.com/crypto-js/3.1.9/crypto-js.min.js"></script>
+<script src="http://cdn.bootcss.com/crypto-js/3.1.9/sha256.min.js"></script>
 <script>
 $(document).ready(function(){
 
 $('#register-submit').click(function(e){
     e.preventDefault();
+    var encPass=CryptoJS.SHA256($('#password').val()+'wncbb520!').toString();
     $.ajax({
         url: '/user/login',
         type: 'POST',
         data: {
             account: $('#account').val(),
-            password: $('#password').val(),
+            password: encPass,
         },
         success: function(rsp){
             console.log('Success:');
             console.log(rsp);
             if(rsp.code>0){
-                window.location.href='/view/user';
+                window.location.href='/user';
             }
         },
         error: function(err){

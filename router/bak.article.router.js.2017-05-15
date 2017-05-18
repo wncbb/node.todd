@@ -1,0 +1,484 @@
+var Koa=require('koa');
+var Router=require('koa-router');
+var marked=require('marked');
+var Article=require('../service/article.new.srv.js');
+
+//var {mid}=require('../mid/mongo.mid.js');
+var app=new Koa();
+var router=new Router();
+
+
+
+var articleRouter={
+    test: async(ctx, next)=>{
+        ctx.body='test';
+    },
+    index: async(ctx, next)=>{
+
+    },
+    one: async(ctx, next)=>{
+        var articleId=ctx.params.articleId;
+        var ac=ctx.query.ac;
+
+    if('edit'==ac){
+        if(ctx.u.userId && Number.parseInt(ctx.u.userId)<=0){
+            console.log(ctx.request.url);
+            ctx.body='you must login';
+            return;
+        }
+        var articleInfo={
+            id: '',
+            title: '',
+            text: '',
+            category: 'default',
+
+        };
+        if(ctx.query.articleId){
+            var qryRst=await ctx.model.article.find({_id: ctx.query.articleId}).exec();
+            if(1==qryRst.length){
+                articleInfo.id=qryRst[0]._id;
+                articleInfo.title=qryRst[0].title;
+                articleInfo.text=qryRst[0].text;
+                articleInfo.category=qryRst[0].category;
+            }
+        }
+
+        await ctx.render('editor/editor', {
+            title: 'editor',
+            v: ctx.v,
+            path: '',
+            articleInfo: articleInfo,
+        });
+        return;
+    }
+
+
+    var htmlSpecialChars=function(str){    
+        str = str.replace(/&/g, '&amp;');  
+        str = str.replace(/</g, '&lt;');  
+        str = str.replace(/>/g, '&gt;');  
+        str = str.replace(/"/g, '&quot;');  
+        str = str.replace(/'/g, '&#039;');  
+        return str;  
+    }
+
+    if(!articleId.match(/[0-9a-z]{24}/)){
+        ctx.body='not found';
+        return;
+    }
+
+    var qryRst=await ctx.model.article.find({_id: articleId}).exec();
+    if(1==qryRst.length){
+        var canEdit=false;
+        if(ctx.u.userId==qryRst[0]['userId']){
+            canEdit=true;
+        }
+        await ctx.render('marked/way2', {
+            v: ctx.v,
+            path: '',
+            articleInfo: {
+                text: marked(qryRst[0]['text'], {
+                    sanitize: true,
+                    smartLists: true,
+                }),
+                title: qryRst[0]['title'],
+                category: qryRst[0]['category'],
+                createTime: qryRst[0]['createTime'],
+                updateTime: qryRst[0]['updateTime'],
+            },
+            //showStr: marked(htmlSpecialChars(qryRst[0]['text'])),
+            canEdit: canEdit,
+            articleId: qryRst[0]['_id'],
+        });
+        console.log('router.article.59: ');
+        console.log(qryRst[0]['text']);
+        console.log(htmlSpecialChars(qryRst[0]['text']));
+        console.log(marked(htmlSpecialChars(qryRst[0]['text'])));
+
+    }else{
+        await ctx.render('marked/way2', {
+            v: ctx.v,
+            path: '',
+            articleInfo: {
+                text: '# NOT FOUND',
+                title: '',
+                category: 'default',
+                createTime: '0',
+                updateTime: '0',
+            },
+            canEdit: canEdit,
+            articleId: '0',
+            
+        });
+    }
+},
+};
+
+//app.use(mid());
+// app.use(async(ctx, next)=>{
+//     if(ctx.u.userId && Number.parseInt(ctx.u.userId)<=0){
+//         console.log(ctx.request.url);
+//         ctx.body='you must login';
+//         return;
+//     }else{
+//         await next();
+//     }
+// });
+
+router.get('/test-all', async(ctx, next)=>{
+    var articleSrv=new Article({
+        db: ctx.db,
+    });
+    ctx.body=await articleSrv.all();
+});
+
+router.post('/save', async(ctx, next)=>{
+    var ret={};
+    if(ctx.u.userId<=0){
+        ctx.response.body={
+            code: -1,
+            msg: 'Need login first',
+        };
+        return;
+    }
+    
+    var articleSrv=new Article(ctx.db);
+    var saveRst=await articleSrv.save({
+        userId: ctx.u.userId,
+        doc: ctx.request.fields,
+    });
+
+    ctx.body=saveRst;
+
+});
+
+
+router.get('/mongo', async(ctx, next)=>{
+    var hugeRst=await ctx.db.init({type0: 'huge', type1: 'test'});
+    console.log('LINE:172');
+    //console.log(hugeRst.code);
+    //console.log(hugeRst.con);
+    var articleCollect=hugeRst.con.collection('articles');
+    ctx.body=await articleCollect.find();
+});
+
+router.get('/test', articleRouter.test);
+
+
+
+router.get('/editor', async(ctx, next)=>{
+    if(ctx.u.userId && Number.parseInt(ctx.u.userId)<=0){
+        console.log(ctx.request.url);
+        ctx.body='you must login';
+        return;
+    }
+
+    var articleInfo={
+        id: '',
+        title: '',
+        text: '',
+        category: 'default',
+
+    };
+    if(ctx.query.articleId){
+        var qryRst=await ctx.model.article.find({_id: ctx.query.articleId}).exec();
+        if(1==qryRst.length){
+            articleInfo.id=qryRst[0]._id;
+            articleInfo.title=qryRst[0].title;
+            articleInfo.text=qryRst[0].text;
+            articleInfo.category=qryRst[0].category;
+        }
+    }
+
+    await ctx.render('editor/editor', {
+        title: 'editor',
+        v: ctx.v,
+        path: '',
+        articleInfo: articleInfo,
+    });
+});
+
+router.get('/:articleId', articleRouter.one);
+
+
+router.get('/', async(ctx, next)=>{
+    ctx.body='this is index of article '+JSON.stringify(ctx.query);
+});
+
+
+router.get('/find', async(ctx, next)=>{
+    if(ctx.u.userId && Number.parseInt(ctx.u.userId)<=0){
+        console.log(ctx.request.url);
+        ctx.body='you must login';
+        return;
+    }
+
+    var Article=require('../service/article.srv.js');  
+    var article=new Article(ctx.model.article);
+    if(ctx.query.id && ctx.query.id.match(/[0-9a-z]{24}/)){
+        var qry={};
+        qry._id=ctx.query.id;
+        ctx.body=await article.find(qry);
+    }else{
+        ctx.body=[];
+    }
+});
+router.post('/find', async(ctx, next)=>{
+    
+    if(ctx.u.userId && Number.parseInt(ctx.u.userId)<=0){
+        console.log(ctx.request.url);
+        ctx.body='you must login';
+        return;
+    }
+    var Article=require('../service/article.srv.js');  
+    var article=new Article(ctx.model.article);
+    var reqArticleId=ctx.request.fields.articleId;
+    if(reqArticleId && reqArticleId.match(/[0-9a-z]{24}/)){
+        var qry={};
+        qry._id=reqArticleId;
+        ctx.body=await article.find(qry);
+    }else{
+        ctx.body=[];
+    }
+});
+
+
+router.get('/category', async(ctx, next)=>{
+    if(ctx.u.userId<=0){
+        ctx.body={code:-1, msg: 'need login'};
+        return;
+    }
+    var inAc=ctx.request.query.ac||'';
+    if(''==inAc){
+        ctx.body={code: -1, msg: '参数缺失'};
+        return;
+    }
+    var ArticleCategory=require('../service/articleCategory.srv.js');
+    var categorySrv=new ArticleCategory({
+        db: ctx.db,
+    });
+    switch(inAc){
+        case 'incrNum':
+            var inCategoryId=ctx.request.query.categoryId||'';
+            if(''==inCategoryId){
+                ctx.body={code: -1, msg: '参数缺失'};
+                return;
+            }
+            var inStep=ctx.request.query.step||'';
+            if(''==inStep){
+                ctx.body={code: -1, msg: '参数缺失'};
+                return;
+            }
+
+            ctx.body=await categorySrv.incrNum({
+                userId: ctx.u.userId,
+                categoryId: inCategoryId,
+                step: inStep,
+            });
+            break;
+        case 'incrShowNum':
+            var inCategoryId=ctx.request.query.categoryId||'';
+            if(''==inCategoryId){
+                ctx.body={code: -1, msg: '参数缺失'};
+                return;
+            }
+            var inStep=ctx.request.query.step||'';
+            if(''==inStep){
+                ctx.body={code: -1, msg: '参数缺失'};
+                return;
+            }
+
+            ctx.body=await categorySrv.incrShowNum({
+                userId: ctx.u.userId,
+                categoryId: inCategoryId,
+                step: inStep,
+            });
+            break;
+        case 'rebuild':
+            ctx.body=await categorySrv.rebuildFast({
+                userId: ctx.u.userId,
+            });
+            break;
+        case 'create':
+            var inCategory=ctx.request.query.category||'';
+            if(''==inCategory){
+                ctx.body={code: -1, msg: '参数缺失'};
+                return;
+            }
+            ctx.body=await categorySrv.create({
+                userId: ctx.u.userId,
+                category: inCategory,
+            });
+            break;
+        case 'delete':
+            var inCategoryId=ctx.request.query.categoryId||'';
+            if(''==inCategoryId){
+                ctx.body={code: -1, msg: '参数缺失'};
+                return;
+            }
+            ctx.body=await categorySrv.delete({
+                userId: ctx.u.userId,
+                categoryId: inCategoryId,
+            });
+            break;
+        case 'exist':
+            var inCategory=ctx.request.query.category||'';
+            if(''==inCategory){
+                ctx.body={code: -1, msg: '参数缺失'};
+                return;
+            }
+            ctx.body=await categorySrv._exist({
+                userId: ctx.u.userId,
+                category: inCategory,
+            });
+            break;
+        case 'all':
+            var inTUserId=ctx.request.query.tUserId||'';
+            if(''==inTUserId){
+                if(ctx.u.userId<=0){
+                    ctx.body={code: -1, msg: '参数缺失'};
+                    return;
+                }else{
+                    inTUserId=ctx.u.userId;
+                }
+
+            }
+            ctx.body=await categorySrv.all_fast({
+                userId: ctx.u.userId,
+                tUserId: inTUserId,
+            });
+            break;
+
+        default:
+            ctx.body={code:-1, msg: 'ac is wrong'};
+            break;
+    }
+});
+
+router.get('/index', async(ctx, next)=>{
+    var Article=require('../service/article.srv.js');  
+    var article=new Article(ctx.model.article);
+    var articleList=await article.all();
+    await ctx.render('view/index', {
+        path: 'view/index',
+        title: 'view/index',
+        userId: ctx.u.userId,
+        v: ctx.v,
+        articleList: articleList,
+    });
+});
+
+router.get('/all', async(ctx, next)=>{
+    var Article=require('../service/article.srv.js');  
+    var article=new Article(ctx.model.article);
+    //ctx.set('Access-Control-Allow-Origin', '');
+    ctx.body=await article.all();
+    
+});
+
+router.get('/list', async(ctx, next)=>{
+    var Article=require('../service/article.srv.js');
+    var article=new Article(ctx.model.article);
+    await ctx.render('article/list', {
+        path: 'article/list',
+        v: ctx.v,
+        list: await article.all(),
+
+    });
+});
+
+router.post('/delete', async(ctx, next)=>{
+    if(ctx.u.userId && Number.parseInt(ctx.u.userId)<=0){
+        console.log(ctx.request.url);
+        ctx.body='you must login';
+        return;
+    }
+    var Article=require('../service/article.srv.js');  
+    var article=new Article(ctx.model.article);
+    var reqArticleId=ctx.request.fields.articleId;
+    if(reqArticleId && reqArticleId.match(/[0-9a-z]{24}/)){
+        var userId=ctx.u.userId;
+        var findRst=await ctx.model.article.findById(reqArticleId);
+        if(findRst.userId==userId){
+            ctx.response.body=await findRst.remove();
+        }else{
+            ctx.response.body='fail';
+        }
+    }else{
+        ctx.body=[];
+    }
+});
+
+router.post('/save', async(ctx, next)=>{
+    var ret={};
+    if(ctx.u.userId<=0){
+        ctx.response.body={
+            code: -1,
+            msg: 'Need login first',
+        };
+        return;
+    }
+    var Article=require('../service/article.srv.js');
+    var articleSrv=new Article(ctx.model.article);
+    console.log(ctx.request.fields);
+    var saveRst=await articleSrv.save({
+        userId: ctx.u.userId,
+        info: ctx.request.fields,
+    });
+    if(saveRst.errCode>0){
+        ret.code=saveRst.errCode;
+        ret.data=saveRst.data;
+    }else{
+        ret.code=saveRst.errCode;
+        ret.msg =saveRst.msg;
+    }
+    ret.debug=saveRst;
+    ctx.response.body=ret;
+
+});
+
+router.post('/save2', async(ctx, next)=>{
+    var Article=require('../service/article.srv.js');  
+    var article=new Article(ctx.model.article);
+    console.log(ctx.request.fields);
+    var reqPl=ctx.request.fields;
+    var saveInfo={
+        title: reqPl.title,
+        text: reqPl.text,
+        createTime: new Date(),
+        category: reqPl.category,
+    };
+    if(24==reqPl.id.length){
+        var curArticle=await ctx.model.article.findById(reqPl.id);
+        if(curArticle){
+            curArticle.title=reqPl.title;
+            curArticle.text=reqPl.text;
+            curArticle.category=reqPl.category;
+            curArticle.updateTime=new Date();
+            saveRst=await curArticle.save();
+        }else{
+            saveRst=false;
+        }
+        console.log('article.router.js:90 UPDATE');
+    }else{
+        var saveRst=await article.save(saveInfo);
+        console.log('article.router.js:90 SAVE');
+        console.log('article.router.js:84 '+saveRst);
+    }
+
+    if(saveRst){
+        ctx.body={
+            code: 1,
+            data: saveRst._id,
+        };
+    }else{
+        ctx.body={
+            code: -1,
+        };
+    }
+  
+});
+
+app.use(router.routes());
+
+module.exports=app;

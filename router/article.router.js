@@ -1,159 +1,199 @@
 var Koa=require('koa');
 var Router=require('koa-router');
 var marked=require('marked');
+var Article=require('../service/article.srv.js');
 
-var {mid, articleModel:article}=require('../mid/mongo.mid.js');
+//var {mid}=require('../mid/mongo.mid.js');
 var app=new Koa();
 var router=new Router();
+var ArticleCtr=require('../controller/article/article.ctr.js');
 
-app.use(mid());
-app.use(async(ctx, next)=>{
-    if(false && !ctx.u.userInfo.account){
-        ctx.body='you must login';
-        return;
-    }
-    await next();
-});
+//对于未登录用户，以及登录用户但是想要编辑的不是自己的文章，需要做过滤
 
-router.get('/editor', async(ctx, next)=>{
-    await ctx.render('editor/editor', {
-        title: 'editor/editor',
+router.get('/:articleId', async(ctx, next)=>{
+  if(undefined==ctx.request.query.ac){
+    ctx.request.query.ac='show';
+  } 
+  switch(ctx.request.query.ac){
+    case 'edit':
+      break;
+    case 'show':
+      break;
+    default:
+      ctx.status=404;
+      //ctx.body='NOT FOUND 516';
+      ctx.redirect('/404');
+      return;
+      break;
+  }
+  var ctrArg={
+    userId: ctx.u.userId,
+    articleId: ctx.params.articleId,
+    acInfo: ctx.request.query,
+  };
+
+  var articleCtr=new ArticleCtr({
+    srv: new Article({db: ctx.db}),
+  });
+  var ctrRst=await articleCtr.control(ctrArg);
+  if(ctrRst.code<0){
+    ctx.body=ctrRst;
+    return;
+  }
+  switch(ctrArg.acInfo.ac){
+    case 'edit':
+      await ctx.render('editor/editor', {
+        title: 'editor',
         v: ctx.v,
         path: '',
-    });
-});
-
-router.get('/show', async(ctx, next)=>{
-    var qryRst=await ctx.model.article.find({_id: ctx.query.id}).exec();
-    if(1==qryRst.length){
-        await ctx.render('marked/way2', {
-            v: ctx.v,
-            path: '',
-            showStr: marked(qryRst[0]['text']),
-        });
-    }else{
-        await ctx.render('marked/way2', {
-            v: ctx.v,
-            path: '',
-            showStr: '## NOT FOUND',
-        });
-    }
-});
-
-router.get('/find', async(ctx, next)=>{
-    var Article=require('../service/article.srv.js');  
-    var article=new Article(ctx.model.article);
-    if(ctx.query.id && ctx.query.id.match(/[0-9a-z]{24}/)){
-        var qry={};
-        qry._id=ctx.query.id;
-        ctx.body=await article.find(qry);
-    }else{
-        ctx.body=[];
-    }
-    
-});
-
-router.get('/index', async(ctx, next)=>{
-    var Article=require('../service/article.srv.js');  
-    var article=new Article(ctx.model.article);
-    var articleList=await article.all();
-    await ctx.render('view/index', {
-        path: 'view/index',
-        title: 'view/index',
-        userId: ctx.u.userId,
+        articleInfo: ctrRst.data.articleInfo,
+      });
+      return;
+      break;
+    case 'show':
+      await ctx.render('marked/way2', {
         v: ctx.v,
-        articleList: articleList,
-    });
+        path: '',
+        articleInfo: {
+          text: marked(ctrRst.data.articleInfo.text, {
+            sanitize: true,
+            smartLists: true,
+          }),
+          title: ctrRst.data.articleInfo.title,
+          category: ctrRst.data.articleInfo.category,
+        },
+        //showStr: marked(htmlSpecialChars(qryRst[0]['text'])),
+        canEdit: true,
+        articleId: ctrRst.data.articleInfo._id,
+      });
+      break;
+    default:
+      ctx.body={
+        code: -1,
+        msg: 'unknown ac.router.article.46',
+      };
+      return;
+      break;
+  }
 });
 
-router.get('/all', async(ctx, next)=>{
-    var Article=require('../service/article.srv.js');  
-    var article=new Article(ctx.model.article);
-    //ctx.set('Access-Control-Allow-Origin', '');
-    ctx.body=await article.all();
-    
-});
+router.post('/:articleId', async(ctx, next)=>{
+  if(undefined==ctx.request.query.ac){
+    ctx.request.query.ac='show';
+  }
+  var showAc='findById';
+  switch(ctx.request.query.ac){
+    case 'findById':
+      break;
+    case 'edit':
+      break;
+    case 'show':
+      break;
+    case 'update':
+      break;
+    case 'delete':
+      break;
+    default:
+      ctx.status=404;
+      //ctx.body='NOT FOUND 516';
+      ctx.redirect('/404');
+      return;
+      break;
+  }
+  var ctrArg={
+    userId: ctx.u.userId,
+    articleId: ctx.params.articleId,
+    acInfo: ctx.request.fields,
+  };
 
-router.get('/list', async(ctx, next)=>{
-    var Article=require('../service/article.srv.js');
-    var article=new Article(ctx.model.article);
-    await ctx.render('article/list', {
-        path: 'article/list',
+  var articleCtr=new ArticleCtr({
+    srv: new Article({db: ctx.db}),
+  });
+  var ctrRst=await articleCtr.control(ctrArg);
+  if(ctrRst.code<0){
+    ctx.body=ctrRst;
+    return;
+  }
+  switch(ctrArg.acInfo.ac){
+    case 'update':
+      ctx.body=ctrRst;
+      return;
+      break;
+    case 'findById':
+      ctx.body=ctrRst;
+      return;
+      break;
+    case 'edit':
+      await ctx.render('editor/editor', {
+        title: 'editor',
         v: ctx.v,
-        list: await article.all(),
-
-    });
+        path: '',
+        articleInfo: ctrRst.data.articleInfo,
+      });
+      return;
+      break;
+    case 'show':
+      await ctx.render('marked/way2', {
+        v: ctx.v,
+        path: '',
+        articleInfo: {
+          text: marked(ctrRst.data.articleInfo.text, {
+            sanitize: true,
+            smartLists: true,
+          }),
+          title: ctrRst.data.articleInfo.title,
+          category: ctrRst.data.articleInfo.category,
+        },
+        //showStr: marked(htmlSpecialChars(qryRst[0]['text'])),
+        canEdit: true,
+        articleId: ctrRst.data.articleInfo._id,
+      });
+      return;
+      break;
+    case 'delete':
+      ctx.body=ctrRst;
+      return;
+      break;
+    default:
+      ctx.body={
+        code: -1,
+        msg: 'unknown ac.router.article.156',
+      };
+      return;
+      break;
+  }
 });
 
-router.post('/save', async(ctx, next)=>{
-    var ret={};
-    if(ctx.u.userId<=0){
-        ctx.response.body={
-            code: -1,
-            msg: 'Need login first',
-        };
-        return;
-    }
-    var Article=require('../service/article.srv.js');
-    var articleSrv=new Article(ctx.model.article);
-    console.log(ctx.request.fields);
-    var saveRst=await articleSrv.save({
-        userId: ctx.u.userId,
-        info: ctx.request.fields,
-    });
-    if(saveRst.errCode>0){
-        ret.code=saveRst.errCode;
-        ret.data=saveRst.data;
-    }else{
-        ret.code=saveRst.errCode;
-        ret.msg =saveRst.msg;
-    }
-    ret.debug=saveRst;
-    ctx.response.body=ret;
+router.get('/', async(ctx, next)=>{
+  var ctrArg={
+    userId: ctx.u.userId,
+    acInfo: ctx.request.query,
+  };
+
+  var articleCtr=new ArticleCtr({
+    srv: new Article({db: ctx.db}),
+  });
+  ctx.body=await articleCtr.control(ctrArg);
 
 });
 
-router.post('/save2', async(ctx, next)=>{
-    var Article=require('../service/article.srv.js');  
-    var article=new Article(ctx.model.article);
-    console.log(ctx.request.fields);
-    var reqPl=ctx.request.fields;
-    var saveInfo={
-        title: reqPl.title,
-        text: reqPl.text,
-        createTime: new Date(),
-        category: reqPl.category,
-    };
-    if(24==reqPl.id.length){
-        var curArticle=await ctx.model.article.findById(reqPl.id);
-        if(curArticle){
-            curArticle.title=reqPl.title;
-            curArticle.text=reqPl.text;
-            curArticle.category=reqPl.category;
-            curArticle.updateTime=new Date();
-            saveRst=await curArticle.save();
-        }else{
-            saveRst=false;
-        }
-        console.log('article.router.js:90 UPDATE');
-    }else{
-        var saveRst=await article.save(saveInfo);
-        console.log('article.router.js:90 SAVE');
-        console.log('article.router.js:84 '+saveRst);
-    }
+router.post('/', async(ctx, next)=>{
+  var ctrArg={
+    userId: ctx.u.userId,
+    acInfo: ctx.request.fields,
+  };
 
-    if(saveRst){
-        ctx.body={
-            code: 1,
-            data: saveRst._id,
-        };
-    }else{
-        ctx.body={
-            code: -1,
-        };
-    }
-  
+  var articleCtr=new ArticleCtr({
+    srv: new Article({db: ctx.db}),
+  });
+  ctx.body=await articleCtr.control(ctrArg);
+
 });
+
+
+
+
+
 
 app.use(router.routes());
 

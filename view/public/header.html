@@ -2,31 +2,38 @@
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <a class="navbar-brand" href="#">WNCBB</a>
+  <a class="navbar-brand" href="/">WNCBB</a>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item <%if('view/index'==path){%>active<%}%>">
-        <a class="nav-link" href="/view/index">Home <span class="sr-only">(current)</span></a>
+      <li class="nav-item <%if('/index'==locals.id){%>active<%}%>">
+        <a class="nav-link" href="/index">Home <span class="sr-only">(current)</span></a>
       </li>
+      <!--
       <li class="nav-item <%if('article/list'==path){%>active<%}%>">
-        <a class="nav-link" href="/view/list">list <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/list">list <span class="sr-only">(current)</span></a>
       </li>
+      -->
       <%if(locals.v.userId>0){%>
-      <li class="nav-item <%if('view/logout'==locals.path){%>active<%}%>">
+      <li class="nav-item <%if('/user.me'==locals.id){%>active<%}%>">
+        <a class="nav-link" href="/user">User</a>
+      </li>
+      <li class="nav-item <%if('/editor'==locals.id){%>active<%}%>">
+        <a class="nav-link" href="/editor">Editor</a>
+      </li>
+      <li class="nav-item <%if('/logout'==locals.id){%>active<%}%>">
         <a class="nav-link" href="/user/logout">Logout</a>
       </li>
+
       <%}else{%>
-      <li class="nav-item <%if('view/register'==locals.path){%>active<%}%>">
-        <a class="nav-link" href="/view/register">Register</a>
+      <li class="nav-item <%if('/register'==locals.id){%>active<%}%>">
+        <a class="nav-link" href="/register">Register</a>
       </li>
-      <li class="nav-item <%if('view/login'==locals.path){%>active<%}%>">
-        <a class="nav-link" href="/view/login">Login</a>
+      <li class="nav-item <%if('/login'==locals.id){%>active<%}%>">
+        <a class="nav-link" href="/login">Login</a>
       </li>
       <%}%>
-      <li class="nav-item <%if('view/user'==locals.path){%>active<%}%>">
-        <a class="nav-link" href="/view/user">User</a>
-      </li>
+
       <li class="nav-item">
         <a class="nav-link disabled" href="#">Disabled</a>
       </li>
@@ -41,7 +48,8 @@
 
 <script>
   $(document).ready(function(){
-    
+    var url=window.location.href;
+
   });
 </script>
 

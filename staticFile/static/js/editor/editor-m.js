@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
 
+
   function editorOnHandler(cm, co) {
     $('.markdown-body').html(marked(cm.getValue()));
     $('.markdown-body pre code').each(function(i, block) {
@@ -38,14 +39,45 @@ $(document).ready(function(){
   });
   editor.on('change', editorOnHandler);
   
-
+  if($('#articleId').val()!=''){
+    var url='/article/'+$('#articleId').val();
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+            ac: 'findById',
+            articleId: $('#articleId').val(),
+        },
+        success: function(rsp){
+            console.log('Success:');
+            console.log(rsp);
+            editor.setValue(rsp.data.articleInfo.text);
+        },
+        error: function(err){
+            console.log('Error:');
+            console.log(err);
+        },
+    });
+  }
 
   $('#saveArticle').on('click', function(e){
     e.preventDefault();
+    var ac='create';
+    var url='/article';
+    console.log('val: '+$('#articleId').val());
+    if(''!=$('#articleId').val() && undefined!=$('#articleId').val()){
+      ac='update';
+      url=url+'/'+$('#articleId').val();
+    }
+    console.log('url: '+url);
+    console.log('ac: '+ac);
+    console.log($('#articleId').val());
+
     $.ajax({
-      url: '/article/save',
+      url: url,
       type: 'POST',
       data: {
+        ac: ac,
         id: $('#articleId').val(),
         text: editor.getValue(),
         title: $('#articleTitle').val(),
@@ -53,7 +85,7 @@ $(document).ready(function(){
       },
       success: function(rsp){
         if(rsp.code>0){
-          $('#articleId').val(rsp.data.id);
+          $('#articleId').val(rsp.data.articleId);
         }
         console.log('fromServer:SUCCESS: '+JSON.stringify(rsp));
       },

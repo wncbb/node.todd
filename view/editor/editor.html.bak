@@ -1,40 +1,26 @@
 <%- include('../public/header.html'); %>
 
-<% if(false) { %>
 <link rel="stylesheet" href="/static/code-mirror/lib/codemirror.css">
 <link rel="stylesheet" href="/static/code-mirror/theme/solarized.css">
 <link rel="stylesheet" href="/static/code-mirror/addon/fold/foldgutter.css">
 <link rel="stylesheet" href="/static/code-mirror/addon/dialog/dialog.css">
-<% } else { %>
-<link rel="stylesheet" href="http://cdn.bootcss.com/codemirror/5.25.2/codemirror.min.css">
-<link rel="stylesheet" href="http://cdn.bootcss.com/codemirror/5.25.2/theme/solarized.min.css">
-<link rel="stylesheet" href="http://cdn.bootcss.com/codemirror/5.25.2/addon/fold/foldgutter.min.css">
-<link rel="stylesheet" href="http://cdn.bootcss.com/codemirror/5.25.2/addon/dialog/dialog.min.css">
-<% } %>
-
-<% if(false) { %>
 <link rel="stylesheet" href="/static/prism/prism.css">
 <link rel="stylesheet" href="/static/css/github-markdown.css">
-<% } else { %>
-<link rel="stylesheet" href="http://cdn.bootcss.com/github-markdown-css/2.6.0/github-markdown.min.css">
-<link rel="stylesheet" href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css
-">
-<% } %>
 
 <style>
 
 </style>
 
 <form class="container form" method="POST">
-  <input type="text" style="display:none;" id="articleId" name="articleId" value="<%= articleInfo._id %>">
+  <input type="text" style="display:none;" id="articleId" name="articleId" value="<%= articleInfo.id %>">
   <div class="row">
     <input type="text" class="form-control col-12 border-0" id="articleTitle" name="articleTitle" placeholder="请填写标题" value="<%= articleInfo.title %>">
   </div>
   <div class="row">
     <div class="col-12">
-      <select type="text" class="form-control border-0" id="articleCategory" name="articleCategory" placeholder="请选择类别" autocomplete="off">
-        <option value="default" <% if(articleInfo.category=='default') { %>selected="selected"<% } %> >default</option>
-        <option value="mysql" <% if(articleInfo.category=='mysql') { %>selected="selected"<% } %> >mysql</option>
+      <select type="text" class="form-control border-0" id="articleCategory" name="articleCategory" placeholder="请选择类别">
+        <option value="default" <% if('default'==articleInfo.category) {%> selected="selected" <% } %> >default</option>
+        <option value="mysql" <% if('mysql'==articleInfo.category) {%> selected="selected" <% } %> >mysql</option>
       </select>
     </div>
 
@@ -66,7 +52,7 @@
 </form>
 
 
-<% if(false) { %>
+
 <script src="/static/code-mirror/lib/codemirror.js"></script>
 <!--代码折叠start-->
 <script src="/static/code-mirror/addon/fold/foldcode.js"></script>
@@ -88,31 +74,6 @@
 
 <script src="/static/prism/prism-1.js"></script>
 <script src="/static/js/marked.js"></script>
-<% } else { %>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/codemirror.min.js"></script>
-<!--代码折叠start-->
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/fold/foldcode.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/fold/foldgutter.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/fold/brace-fold.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/fold/xml-fold.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/fold/indent-fold.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/fold/markdown-fold.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/fold/comment-fold.min.js"></script>
-<!--代码折叠stop-->
-<!--代码查找start-->
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/search/search.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/search/searchcursor.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/search/jump-to-line.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/addon/dialog/dialog.min.js"></script>
-<!--代码查找stop-->
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/mode/javascript/javascript.min.js"></script>
-<script src="http://cdn.bootcss.com/codemirror/5.25.2/mode/markdown/markdown.min.js"></script>
-<!--
-<script src="http://cdn.bootcss.com/prism/9000.0.1/prism.min.js"></script>
--->
-<script src="/static/prism/prism-1.js"></script>
-<script src="http://cdn.bootcss.com/marked/0.3.6/marked.min.js"></script>
-<% } %>
 
 <script src="/static/js/editor/editor-m.js"></script>
 

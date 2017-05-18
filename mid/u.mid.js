@@ -1,6 +1,7 @@
 var rndm=require('rndm');
 var crypto=require('crypto');
 var util=require('util');
+var momentTz=require('moment-timezone');
 
 /*
 CREATE TABLE `user_core` (
@@ -67,9 +68,36 @@ class User{
     async login({
         account: inAccount='',
         password: inPassword='',
+        ip='',
     }={}){
         var ret={};
         ret.code=-1;
+
+        if(''==ip){
+            ret.code=-1;
+            ret.msg='ipError.mid.u.77';
+            return ret;
+        }
+
+        var fastRst=await this.ctx.db.init({
+            type0: 'fast',
+            type1: 'read0',
+        });
+        if(fastRst.code<0){
+            ret=fastRst;
+            return ret;
+        }
+        var ipNumStrictKey='ip:login:'+momentTz().format('YYYY-MM-DDTHH')+':z';
+        console.log('ipNumStrictKey: '+ipNumStrictKey);
+
+        var curIpNum=await fastRst.con.zscore(ipNumStrictKey, ip);
+        console.log('ip:'+ip+' '+curIpNum);
+        if(curIpNum>3){
+            ret.code=-1;
+            ret.msg='ip登录次数过多.mid.u.94';
+            return ret;
+        }
+        await fastRst.con.zincrby(ipNumStrictKey, 1, ip);
 
         var accountRst=await this._checkAccount({
             account: inAccount,
@@ -94,7 +122,7 @@ class User{
         
         if(1!=qryRst[0].length){
             ret.code=-1;
-            ret.msg='账号或密码错误1';
+            ret.msg='账号或密码错误.mid.u.97';
             return ret;
         }
         var userCoreInfo=qryRst[0][0];
@@ -104,7 +132,8 @@ class User{
         });
         if(encPassword!=userCoreInfo.password){
             ret.code=-1;
-            ret.msg='账号或密码错误2';
+            ret.msg='账号或密码错误.mid.u.107';
+            return ret;
         }
         ret.code=1;
         ret.userId=userCoreInfo.id;
@@ -114,6 +143,7 @@ class User{
             password: inPassword,
             secret: userCoreInfo.secret,
         };
+        
 
         return ret;
     }
@@ -125,7 +155,7 @@ class User{
         ret.code=-1;
         if(!/[0-9a-zA-Z]+/.test(password)){
             ret.code=-1;
-            ret.msg='密码格式错误';
+            ret.msg='密码格式错误.mid.u.129';
             return ret;
         }
         ret.code=1;
@@ -141,7 +171,7 @@ class User{
         console.log('account:'+account);
         if(!/[0-9a-zA-Z\.\@\_\-]+/.test(account)){
             ret.code=-1;
-            ret.msg='账号格式错误';
+            ret.msg='账号格式错误.mid.u.145';
             return ret;
         }
         switch(type){
@@ -159,7 +189,7 @@ class User{
                 var qryRst=await coreRst.con.query(qryStr, [account]);
                 if(qryRst[0][0]['num']>0){
                     ret.code=-1;
-                    ret.msg='已经存在该账号';
+                    ret.msg='已经存在该账号.mid.u.163';
                 }else{
                     ret.code=1;
                 }
@@ -169,7 +199,7 @@ class User{
                 break;
             default: 
                 ret.code=-1;
-                ret.msg='账号类型错误';
+                ret.msg='账号类型错误.mid.u.173';
                 break;
         }
 
@@ -179,10 +209,35 @@ class User{
     async register({
         account='',
         password='',
-        username='',
+        ip='',
     }={}){
         var ret={};
         ret.code=-1;
+
+        if(''==ip){
+            ret.code=-1;
+            ret.msg='ipError.mid.u.191';
+            return ret;
+        }
+
+        var fastRst=await this.ctx.db.init({
+            type0: 'fast',
+            type1: 'read0',
+        });
+        if(fastRst.code<0){
+            ret=fastRst;
+            return ret;
+        }
+
+        var ipNumStrictKey='ip:register:'+momentTz().format('YYYY-MM-DDTHH')+':z';
+        var curIpNum=await fastRst.con.zscore(ipNumStrictKey, ip);
+        if(curIpNum>3){
+            ret.code=-1;
+            ret.msg='ip注册次数过多.mid.u.209';
+            return ret;
+        }
+
+        await fastRst.con.zincrby(ipNumStrictKey, 1, ip);
 
         var checkAccount=await this._checkAccount({
             account: account,
@@ -199,6 +254,8 @@ class User{
             ret=checkPassword;
             return ret;
         }
+
+
 
         var uInfo={};
         uInfo.account=account;
@@ -245,7 +302,7 @@ class User{
 
         if(-1==userId){
             ret.code=-1;
-            ret.msg='用户id错误';
+            ret.msg='用户id错误.mid.u.249';
             return ret;
         }
 
@@ -272,7 +329,7 @@ class User{
         ret.code=-1;
         if(-1==userId){
             ret.code=-1;
-            ret.msg='load user info error because the userId is -1';
+            ret.msg='load user info error because the userId is -1.mid.u.276';
             return ret;
         }
         var fastRst=await this.ctx.db.init({

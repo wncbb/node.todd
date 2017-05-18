@@ -4,28 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <% if(false) { %>
   <link rel="stylesheet" href="/static/tether/tether.css">
   <link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
   <script src="/static/js/jquery-3.1.1.js"></script>
   <script src="/static/js/jquery.cookie.js"></script>
-  <script src="/static/js/jquery-ext.js"></script>
-  <script src="/static/js/jquery-ext.js"></script>
   <script src="/static/js/holder.min.js"></script>
   <script src="/static/tether/tether.min.js"></script>
   <script src="/static/bootstrap/bootstrap.min.js"></script>
   <script src="/static/vue/vue.js"></script>
-  <% if(locals.ws){ %>
-  <script src="/static/js/socket.io.min.js"></script>
+  <% } else { %>
+  <link rel="stylesheet" href="http://cdn.bootcss.com/tether/1.4.0/css/tether.min.css">
+  <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+  <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="http://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+  <script src="http://cdn.bootcss.com/holder/2.9.4/holder.min.js"></script>
+  <script src="http://cdn.bootcss.com/tether/1.4.0/js/tether.min.js"></script>
+  <script src="http://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+  <script src="http://cdn.bootcss.com/vue/2.3.2/vue.min.js"></script>
   <% } %>
-<!--
+ 
+  <% if(locals.ws){ %>
+  <script src="http://cdn.bootcss.com/socket.io/1.7.3/socket.io.min.js"></script>
+  <!--
+  <script src="/static/js/socket.io.min.js"></script>
+  -->
+  <% } %>
+
   <script src="/static/js/jquery-ext.js"></script>
-  <script src="/static/js/jquery.ajaxfileupload.js"></script>
-  <script src="/static/js/tether/tether.js"></script>
-  <script src="/static/js/bootstrap.min.js"></script>
-  <script src="/static/js/holder.js"></script>
-  <script src="/static/js/jquery.cookie.js"></script>
-  <script src="/static/js/socket.io.js"></script>
--->
+
   <title><%=locals.title%></title>
 </head>
 <body>

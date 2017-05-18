@@ -96,6 +96,11 @@ app.use(v());
 var db=require('./mid/db.mid.js');
 app.use(db(config.db));
 
+/*
+var {mid:mongo}=require('./mid/mongo.mid.js');
+app.use(mongo());
+*/
+
 //log
 var log=require('./mid/log.mid.js');
 app.use(log(config.log.log4js));
@@ -116,54 +121,82 @@ app.use(testRouter.routes());
 */
 
 
-
+/*
 var testRouter=require('./router/test.router.js');
 app.use(mount('/mount', testRouter.routes()));
+*/
 
+/*
 var koaRouter=require('./router/koa.router.js');
 app.use(mount('/koa', koaRouter));
+*/
 
+/*
 var baseRouter=require('./router/base.router.js');
 app.use(mount('/base', baseRouter));
+*/
 
+/*
 var test3Router=require('./router/test3.router.js');
 app.use(test3Router.routes());
+*/
 
+/*
 var bsRouter=require('./router/bs.router.js');
 app.use(mount('/bs', bsRouter));
+*/
 
+/*
 var codeRouter=require('./router/code.router.js');
 app.use(mount('/code', codeRouter));
+*/
+
 
 var userRouter=require('./router/user.router.js');
 app.use(mount('/user', userRouter));
 
+
+
 var viewRouter=require('./router/view.router.js');
-app.use(mount('/view', viewRouter));
+app.use(mount('/', viewRouter));
+
 
 //这个地方直接挂koa2应用
+/*
 var wsRouter=require('./router/ws.router.js');
 app.use(mount('/ws', wsRouter));
+*/
 
 //这里有js注入风险
+/*
 var markedRouter=require('./router/marked.router.js');
 app.use(mount('/marked', markedRouter));
+*/
 
-
+/*
 var codeMirrorRouter=require('./router/codeMirror.router.js');
 app.use(mount('/code-mirror', codeMirrorRouter));
+*/
 
+/*
 var editorRouter=require('./router/editor.router.js');
 app.use(mount('/editor', editorRouter));
+*/
 
+/*
 var mongoRouter=require('./router/mongo.router.js');
 app.use(mount('/mongo', mongoRouter));
+*/
+
+
 
 var articleRouter=require('./router/article.router.js');
 app.use(mount('/article', articleRouter));
 
+/*
 var infoRouter=require('./router/info.router.js');
 app.use(mount('/info', infoRouter));
+*/
 
 app.use(async (ctx, next)=>{
     switch(ctx.request.url){
