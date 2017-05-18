@@ -62,7 +62,12 @@ router.get('/', async(ctx, next)=>{
         db: ctx.db,
     });
     console.log('ip: '+ctx.request.ip);
+
+
+
     var articleList=await articleSrv.all();
+    console.log('articleList.data: ');
+    console.log(articleList.data);
     await ctx.render('view/index', {
         id: '/index',
         path: 'view/index',
