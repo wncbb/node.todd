@@ -74,7 +74,7 @@ router.get('/', async(ctx, next)=>{
         title: 'view/index',
         userId: ctx.u.userId,
         v: ctx.v,
-        articleList: articleList.data,
+        articleList: articleList.data || [],
     });
 });
 
