@@ -51,6 +51,10 @@ router.get('/:articleId', async(ctx, next)=>{
       return;
       break;
     case 'show':
+      var canEdit=false;
+      if(ctx.u.userId==ctrRst.data.articleInfo.userId){
+        canEdit=true;
+      }
       await ctx.render('marked/way2', {
         v: ctx.v,
         path: '',
@@ -63,7 +67,7 @@ router.get('/:articleId', async(ctx, next)=>{
           category: ctrRst.data.articleInfo.category,
         },
         //showStr: marked(htmlSpecialChars(qryRst[0]['text'])),
-        canEdit: true,
+        canEdit: canEdit,
         articleId: ctrRst.data.articleInfo._id,
       });
       break;
