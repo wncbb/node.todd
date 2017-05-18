@@ -81,7 +81,7 @@ class User{
 
         var fastRst=await this.ctx.db.init({
             type0: 'fast',
-            type1: 'read0',
+            type1: 'write0',
         });
         if(fastRst.code<0){
             ret=fastRst;
